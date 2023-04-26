@@ -1,0 +1,3 @@
+[submodule "Runtime/Plugins/Trilib"]
+	path = Runtime/Plugins/Trilib
+	url = git@github.com:Studio-Manette/trilib.git
