@@ -32,6 +32,8 @@ namespace StudioManette.Edna
 
         private static readonly string EdnaQualityName = "EDNA";
 
+        private bool isBuildValid;
+
         public static void OnEnable()
         {
             steps = new List<CustomBuildStep>();
@@ -46,11 +48,11 @@ namespace StudioManette.Edna
             steps.Add(new CustomBuildStep(65, "6.5 Restore Quality and 3D API", RestoreQuality));
         }
 
-        public static void Test()
+        private bool CheckValidity()
         {
-            var sr = System.IO.File.CreateText("D:\\TeamCity\\result.txt");
-            sr.WriteLine("Test succeed ! " + System.DateTime.Now.ToString("yyy-MM-dd-hh:mm:ss"));
-            sr.Close();
+            bool isValid = true;
+            isValid = isValid && BuildManager.PreviewIncrementedBuild() != "BAD-VERSIONNING";
+            return isValid;
         }
 
         /* these 3 functions are called by TeamCity */
@@ -93,7 +95,6 @@ namespace StudioManette.Edna
             }
 
             steps.Add(new CustomBuildStep(50, "5. Compile with ISS", CompileWizard));
-            // steps.Add(new CustomBuildStep(60, "6. Push shaders profiles on Tools server and SVN commit", ExportShaderProfiles));
             steps.Add(new CustomBuildStep(65, "6.5 Restore Quality and 3D API", RestoreQuality));
             steps.Add(new CustomBuildStep(99, "9. Log Success", LogSuccess));
             
@@ -107,10 +108,13 @@ namespace StudioManette.Edna
                 DrawStep(step);
             }
 
+            isBuildValid = CheckValidity();
+            EditorGUI.BeginDisabledGroup(!isBuildValid);
             if (GUILayout.Button("PROCESS ALL SELECTED STEPS"))
             {
                 DoAllSteps();
             }
+            EditorGUI.EndDisabledGroup();
         }
 
         private void DrawStep(CustomBuildStep step)
