@@ -1,0 +1,17 @@
+{
+    "name": "StudioManette.Edna.Common",
+    "rootNamespace": "",
+    "references": [
+        "StudioManette.Bob.Common",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

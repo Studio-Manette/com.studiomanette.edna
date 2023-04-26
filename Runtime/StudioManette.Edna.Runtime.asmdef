@@ -1,0 +1,26 @@
+{
+    "name": "StudioManette.Edna.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "StudioManette.Edna.Common",
+        "StudioManette.Bob.Common",
+        "StudioManette.Bob.Runtime",
+        "TriLibCore.Scripts",
+        "TriLibSamples.Scripts",
+        "TriLibStandaloneFileBrowser",
+        "MachinMachines.Utils.Common",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.HighDefinition.Runtime",
+        "RuntimeInspector.Runtime",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

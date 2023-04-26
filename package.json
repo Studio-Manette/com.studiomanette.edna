@@ -1,0 +1,12 @@
+{
+  "name": "com.studiomanette.edna",
+  "displayName": "Studio Manette Edna",
+  "version": "1.0.0",
+  "unity": "2022.2",
+  "description": "Studio Manette Edna : External Unity Tool for Material preview and Modification ",
+  "dependencies": {
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@Studio-Manette"
+  }
+}

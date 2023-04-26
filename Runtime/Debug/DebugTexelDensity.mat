@@ -1,0 +1,450 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: DebugTexelDensity
+  m_Shader: {fileID: -6465566751694194690, guid: b72b06eaa8523174fbf6d51dec06bafa, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2000
+  stringTagMap:
+    MotionVector: User
+  disabledShaderPasses:
+  - TransparentDepthPrepass
+  - TransparentDepthPostpass
+  - TransparentBackface
+  - RayTracingPrepass
+  - MOTIONVECTORS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AnisotropyMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BaseColorMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BentNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BentNormalMapOS:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CoatMaskMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissiveColorMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HeightMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _IridescenceMaskMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _IridescenceThicknessMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMapOS:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecularColorMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SubsurfaceMaskMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TangentMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TangentMapOS:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ThicknessMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TransmittanceColorMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_aeb1cdbd04c640408913ad14174fe4cb_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 32e9f77fe68bbf4488eab33a95cc6744, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _gradientBase:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _gradientBottom:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _gradientCoat:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _gradientDirt:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _mapSticker:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _textureSplatMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AORemapMax: 1
+    - _AORemapMin: 0
+    - _ATDistance: 1
+    - _AddPrecomputedVelocity: 0
+    - _AlbedoAffectEmissive: 0
+    - _AlphaCutoff: 0.5
+    - _AlphaCutoffEnable: 0
+    - _AlphaCutoffPostpass: 0.5
+    - _AlphaCutoffPrepass: 0.5
+    - _AlphaCutoffShadow: 0.5
+    - _AlphaDstBlend: 0
+    - _AlphaSrcBlend: 1
+    - _AlphaToMask: 0
+    - _AlphaToMaskInspectorValue: 0
+    - _Anisotropy: 0
+    - _BlendMode: 0
+    - _CoatMask: 0
+    - _ConservativeDepthOffsetEnable: 0
+    - _CullMode: 1
+    - _CullModeForward: 1
+    - _Cutoff: 0.5
+    - _DepthOffsetEnable: 0
+    - _DetailAlbedoScale: 1
+    - _DetailNormalScale: 1
+    - _DetailSmoothnessScale: 1
+    - _DiffusionProfile: 0
+    - _DiffusionProfileHash: 0
+    - _DisplacementLockObjectScale: 1
+    - _DisplacementLockTilingScale: 1
+    - _DisplacementMode: 0
+    - _DoubleSidedEnable: 0
+    - _DoubleSidedGIMode: 0
+    - _DoubleSidedNormalMode: 1
+    - _DstBlend: 0
+    - _EmissiveColorMode: 1
+    - _EmissiveExposureWeight: 1
+    - _EmissiveIntensity: 1
+    - _EmissiveIntensityUnit: 0
+    - _EnableBlendModePreserveSpecularLighting: 1
+    - _EnableFogOnTransparent: 1
+    - _EnableGeometricSpecularAA: 0
+    - _EnergyConservingSpecularColor: 1
+    - _HeightAmplitude: 0.02
+    - _HeightCenter: 0.5
+    - _HeightMapParametrization: 0
+    - _HeightMax: 1
+    - _HeightMin: -1
+    - _HeightOffset: 0
+    - _HeightPoMAmplitude: 2
+    - _HeightTessAmplitude: 2
+    - _HeightTessCenter: 0.5
+    - _InvTilingScale: 1
+    - _Ior: 1.5
+    - _IridescenceMask: 1
+    - _IridescenceThickness: 1
+    - _LinkDetailsWithBase: 1
+    - _MaterialID: 1
+    - _Metallic: 0
+    - _MetallicRemapMax: 1
+    - _MetallicRemapMin: 0
+    - _NormalMapSpace: 0
+    - _NormalScale: 1
+    - _OpaqueCullMode: 1
+    - _PPDLodThreshold: 5
+    - _PPDMaxSamples: 15
+    - _PPDMinSamples: 5
+    - _PPDPrimitiveLength: 1
+    - _PPDPrimitiveWidth: 1
+    - _RayTracing: 0
+    - _ReceivesSSR: 1
+    - _ReceivesSSRTransparent: 0
+    - _RefractionModel: 0
+    - _RenderQueueType: 1
+    - _RequireSplitLighting: 0
+    - _Smoothness: 0.5
+    - _SmoothnessRemapMax: 1
+    - _SmoothnessRemapMin: 0
+    - _SpecularAAScreenSpaceVariance: 0.1
+    - _SpecularAAThreshold: 0.2
+    - _SpecularOcclusionMode: 1
+    - _SrcBlend: 1
+    - _StencilRef: 0
+    - _StencilRefDepth: 1
+    - _StencilRefDistortionVec: 4
+    - _StencilRefGBuffer: 2
+    - _StencilRefMV: 33
+    - _StencilWriteMask: 6
+    - _StencilWriteMaskDepth: 9
+    - _StencilWriteMaskDistortionVec: 4
+    - _StencilWriteMaskGBuffer: 15
+    - _StencilWriteMaskMV: 43
+    - _SubsurfaceMask: 1
+    - _SupportDecals: 1
+    - _SurfaceType: 0
+    - _TexWorldScale: 1
+    - _TexWorldScaleEmissive: 1
+    - _Thickness: 1
+    - _TransmissionEnable: 1
+    - _TransparentBackfaceEnable: 0
+    - _TransparentCullMode: 2
+    - _TransparentDepthPostpassEnable: 0
+    - _TransparentDepthPrepassEnable: 0
+    - _TransparentSortPriority: 0
+    - _TransparentWritingMotionVec: 0
+    - _TransparentZWrite: 0
+    - _UVBase: 0
+    - _UVDetail: 0
+    - _UVEmissive: 0
+    - _UseEmissiveIntensity: 0
+    - _UseShadowThreshold: 0
+    - _ZTestDepthEqualForOpaque: 3
+    - _ZTestGBuffer: 4
+    - _ZTestTransparent: 4
+    - _ZWrite: 1
+    - __Blending: 0
+    - __CURVATURE_LAYER_BLEND: 0
+    - __ColorMode_Base: 0
+    - __ColorMode_Bottom: 0
+    - __ColorMode_Coat: 0
+    - __ColorMode_Dirt: 0
+    - __Control_Surface_Base: 0
+    - __Control_Surface_Bottom: 0
+    - __DRAWER_MinMax__remapAOBase_x__remapAOBase_y: 0
+    - __DRAWER_MinMax__remapAOBottom_x__remapAOBottom_y: 0
+    - __DRAWER_MinMax__remapAOCoat_x__remapAOCoat_y: 0
+    - __DRAWER_MinMax__remapAODirt_x__remapAODirt_y: 0
+    - __DRAWER_MinMax__remapSmoothnessBase_x__remapSmoothnessBase_y: 0
+    - __DRAWER_MinMax__remapSmoothnessBottom_x__remapSmoothnessBottom_y: 0
+    - __DRAWER_MinMax__remapSmoothnessCoat_x__remapSmoothnessCoat_y: 0
+    - __DRAWER_MinMax__remapSmoothnessDirt_x__remapSmoothnessDirt_y: 0
+    - __EFFECTS: 0
+    - __ID_COLOR_VARIATION_COLOR: 0
+    - __LAYER_BASE: 0
+    - __LAYER_BOTTOM: 0
+    - __LAYER_DIRT: 0
+    - __LAYER_TOP_COAT: 0
+    - __Parameters_Coat: 0
+    - __Parameters_Dirt: 0
+    - __Parameters_Sticker: 0
+    - __STICKER: 0
+    - __Texture_Large_Detail_Base: 0
+    - __Texture_Large_Detail_Bottom: 0
+    - __Texture_Small_Detail_Base: 0
+    - __Texture_Small_Detail_Bottom: 0
+    - __Textures_Coat: 0
+    - __Textures_Dirt: 0
+    - __Textures_Sticker: 0
+    - ___TransformsCoat: 0
+    - ___TransformsCoat_1: 0
+    - ___TransformsLDBase: 0
+    - ___TransformsLDBottom: 0
+    - ___TransformsSDBase: 0
+    - ___TransformsSDBottom: 0
+    - _activeBlendMultiplyDirt: 0
+    - _activeBlendMultiplySticker: 0
+    - _activeDust: 1
+    - _activeTriplanarCoat: 0
+    - _activeTriplanarDirt: 0
+    - _activeTriplanarLDBase: 1
+    - _activeTriplanarLDBottom: 0
+    - _activeTriplanarSDBase: 0
+    - _activeTriplanarSDBottom: 0
+    - _addMetalnessSticker: 0
+    - _addVanishSticker: 0
+    - _blendNormalLayers: 0
+    - _blendSharpness: 0.35
+    - _blendSharpnessCoat: 0
+    - _blendSharpnessDirt: 0
+    - _blendUseMaskLayerBottom: 1
+    - _blendUseMaskLayerbase: 0
+    - _colorInfluenceIntensitySDBase: 0
+    - _colorInfluenceIntensitySDBottom: 0
+    - _fetchNormalCoat: 0
+    - _fetchNormalDirt: 0
+    - _fetchNormalSticker: 0
+    - _fetchSmoothnessDirt: 0
+    - _fetchSmoothnessSticker: 0
+    - _globalTilingLength: 1
+    - _globalTilingWidth: 1
+    - _intensityMetalnessBase: 1
+    - _intensityMetalnessBottom: 1
+    - _intensityMetalnessCoat: 1
+    - _intensityMetalnessDirt: 1
+    - _normalIntensityCoat: 1
+    - _normalIntensityDirt: 1
+    - _normalIntensityLDBase: 1
+    - _normalIntensityLDBottom: 1
+    - _normalIntensitySDBase: 1
+    - _normalIntensitySDBottom: 1
+    - _normalInvertCoat: 0
+    - _normalInvertDirt: 0
+    - _normalInvertLDBase: 0
+    - _normalInvertLDBottom: 0
+    - _normalInvertSDBase: 0
+    - _normalInvertSDBottom: 0
+    - _offsetXCoat: 0
+    - _offsetXDirt: 0
+    - _offsetXLDBase: 0
+    - _offsetXLDBottom: 0
+    - _offsetXSDBase: 0
+    - _offsetXSDBottom: 0
+    - _offsetYCoat: 0
+    - _offsetYDirt: 0
+    - _offsetYLDBase: 0
+    - _offsetYLDBottom: 0
+    - _offsetYSDBase: 0
+    - _offsetYSDBottom: 0
+    - _offsetZCoat: 0
+    - _offsetZDirt: 0
+    - _offsetZLDBase: 0
+    - _offsetZLDBottom: 0
+    - _offsetZSDBase: 0
+    - _offsetZSDBottom: 0
+    - _onlyUseForCurvature: 0
+    - _rotationXCoat: 0
+    - _rotationXDirt: 0
+    - _rotationXLDBase: 0
+    - _rotationXLDBottom: 0
+    - _rotationXSDBase: 0
+    - _rotationXSDBottom: 0
+    - _rotationYCoat: 0
+    - _rotationYDirt: 0
+    - _rotationYLDBase: 0
+    - _rotationYLDBottom: 0
+    - _rotationYSDBase: 0
+    - _rotationYSDBottom: 0
+    - _rotationZCoat: 0
+    - _rotationZDirt: 0
+    - _rotationZLDBase: 0
+    - _rotationZLDBottom: 0
+    - _rotationZSDBase: 0
+    - _rotationZSDBottom: 0
+    - _saturationBase: 1
+    - _saturationBottom: 1
+    - _saturationCoat: 1
+    - _saturationDirt: 1
+    - _stickerOpacity: 0
+    - _tilingCoat: 1
+    - _tilingCoatGrunge: 1
+    - _tilingDirt: 1
+    - _tilingLDBase: 10
+    - _tilingLDBottom: 1
+    - _tilingSDBase: 1
+    - _tilingSDBottom: 1
+    - _triplanarBlendingCoat: 3
+    - _triplanarBlendingDirt: 3
+    - _triplanarBlendingLDBase: 3
+    - _triplanarBlendingLDBottom: 3
+    - _triplanarBlendingSDBase: 3
+    - _triplanarBlendingSDBottom: 3
+    - _useAlphatoCutoutLDBottom: 0
+    - _uvTilingStiker: 1
+    - _variationAdd: 0
+    - _variationContrast: 0
+    m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
+    - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissiveColorLDR: {r: 0, g: 0, b: 0, a: 1}
+    - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
+    - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
+    - _TransmittanceColor: {r: 1, g: 1, b: 1, a: 1}
+    - _UVDetailsMappingMask: {r: 1, g: 0, b: 0, a: 0}
+    - _UVMappingMask: {r: 1, g: 0, b: 0, a: 0}
+    - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
+    - _remapAOBase: {r: 0, g: 1, b: 0, a: 0}
+    - _remapAOBottom: {r: 0, g: 1, b: 0, a: 0}
+    - _remapAOCoat: {r: 0, g: 1, b: 0, a: 0}
+    - _remapAODirt: {r: 0, g: 1, b: 0, a: 0}
+    - _remapSmoothnessBase: {r: 0, g: 1, b: 0, a: 0}
+    - _remapSmoothnessBottom: {r: 0, g: 1, b: 0, a: 0}
+    - _remapSmoothnessCoat: {r: 0, g: 1, b: 0, a: 0}
+    - _remapSmoothnessDirt: {r: 0, g: 1, b: 0, a: 0}
+    - _variationTeint: {r: 1, g: 1, b: 1, a: 0}
+  m_BuildTextureStacks: []
+--- !u!114 &4788411988076037380
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da692e001514ec24dbc4cca1949ff7e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 13
+  hdPluginSubTargetMaterialVersions:
+    m_Keys: []
+    m_Values: 

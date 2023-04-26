@@ -1,0 +1,21 @@
+{
+    "name": "StudioManette.Edna.Editor",
+    "rootNamespace": "",
+    "references": [
+        "StudioManette.Bob.Common",
+        "StudioManette.Bill.Common",
+        "StudioManette.Bill.Editor",
+        "StudioManette.Edna.Common"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

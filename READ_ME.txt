@@ -1,1 +1,0 @@
-history of the versionning is in this repository : https://github.com/Studio-Manette/SMJ_Atelier
