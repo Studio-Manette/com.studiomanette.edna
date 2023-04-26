@@ -1,10 +1,14 @@
 {
   "name": "com.studiomanette.edna",
   "displayName": "Studio Manette Edna",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "unity": "2022.2",
-  "description": "Studio Manette Edna : External Unity Tool for Material preview and Modification ",
+  "description": "Studio Manette Edna : External Unity Tool for Material preview and Modification",
   "dependencies": {
+    "com.studiomanette.bob": "0.13.121",
+    "com.studiomanette.bill": "0.1.0",
+    "com.unity.textmeshpro": "3.0.6",
+    "com.machinmachines.utils": "1.3.70"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@Studio-Manette"
