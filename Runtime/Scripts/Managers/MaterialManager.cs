@@ -77,19 +77,25 @@ namespace StudioManette.Edna
         public void OnEnable()
         {
             accessibilityLevel.value = (accessModifyProperties == AccessiblityLevel.COMMON_USER ? 0 : 1);
-
             DisposeFileWatchers();
 
-            //Checker l'int�grit� des materials
-            foreach (CustomizableShader cs in shaderConfig.shaderProfiles)
+            //check shaderConfig Existence
+            if (shaderConfig != null)
             {
-                if (cs == null)
+                //Checker l'int�grit� des materials
+                foreach (CustomizableShader cs in shaderConfig.shaderProfiles)
                 {
-                    string errorText = "ERROR : Material Manager : shaderProfiles is not complete or it contains missing customizableshaders.";
-                    Debug.LogError(errorText);
-                    Utils.Alert(errorText);
+                    if (cs == null)
+                    {
+                        string errorText = "ERROR : Material Manager : shaderProfiles is not complete or it contains missing customizableshaders.";
+                        Debug.LogError(errorText);
+                        Utils.Alert(errorText);
+                    }
                 }
             }
+            else Debug.LogError("MaterialManager Error : Asset shaderConfig not found. Please create it (Create/StudioManette/LightConfigProfile) and assign it on current Material Manager.");
+
+
 
             // 1.0 Mettre en place les callbacks de chargement
             MBXOperations.loadMaterialDelegate = materialProfileName => MaterialManagerUtils.FindMaterialProfileByName(shaderConfig.shaderProfiles, materialProfileName);

@@ -108,14 +108,20 @@ namespace StudioManette.Edna
 
             List<string> options = new List<string>();
 
-            foreach (GameObject go in lightConfig.lightProfiles)
+            //check LightConfigExistence
+            if (lightConfig != null)
             {
-                options.Add(go.name);
-            }
-            dropdownUI.AddOptions(options);
+                foreach (GameObject go in lightConfig.lightProfiles)
+                {
+                    options.Add(go.name);
+                }
+                dropdownUI.AddOptions(options);
 
-            OnSelect(0);
-        }
+                OnSelect(0);
+            }
+            else Debug.LogError("LightManager Error : Asset LightConfig not found. Please create it (Create/StudioManette/LightConfigProfile) and assign it on Light Manager.");
+
+            }
 
         private void Start()
         {
