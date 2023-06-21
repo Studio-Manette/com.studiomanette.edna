@@ -108,7 +108,7 @@ namespace StudioManette.Edna
 
             List<string> options = new List<string>();
 
-            //check LightConfigExistence
+            //check LightConfig Existence
             if (lightConfig != null)
             {
                 foreach (GameObject go in lightConfig.lightProfiles)
