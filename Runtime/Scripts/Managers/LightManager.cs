@@ -40,15 +40,22 @@ namespace StudioManette.Edna
         {
             if (currentPrefab != null) Destroy(currentPrefab);
 
-            GameObject go = lightConfig.lightProfiles[index];
-            if (go != null)
+            if (lightConfig != null && lightConfig.lightProfiles.Count > 0)
             {
-                currentPrefab = GameObject.Instantiate(go);
-                currentPrefab.transform.parent = this.gameObject.transform;
-                currentPrefab.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+                GameObject go = lightConfig.lightProfiles[index];
+                if (go != null)
+                {
+                    currentPrefab = GameObject.Instantiate(go);
+                    currentPrefab.transform.parent = this.gameObject.transform;
+                    currentPrefab.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
 
-                RefreshProbe();
-                ToggleFog(isFogEnabled);
+                    RefreshProbe();
+                    ToggleFog(isFogEnabled);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("lightConfig not found or lightConfig.lightProfiles.Count > 0.");
             }
         }
 
