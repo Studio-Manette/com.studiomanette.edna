@@ -31,12 +31,25 @@ public class DebugShader : MonoBehaviour
         ActiveDebugShader(0);
         m_goDebugTexelDensity = Instantiate<GameObject>(m_prefabDebugTexelDensity);
         m_goDebugTexelDensity.SetActive(false);
+        UpdateDebugEdna();
     }
 
     public void SetRendererGui(int value)
     {
         m_DebugRenderer = (DebugRenderer)value;
         SetDebug();
+    }
+
+    private void UpdateDebugEdna()
+    {
+        if (IsEdna)
+        {
+            Shader.SetGlobalInt("_debugIsEdna", 1);
+        }
+        else
+        {
+            Shader.SetGlobalInt("_debugIsEdna", 0);
+        }
     }
 
     private void SetDebug()
@@ -110,15 +123,7 @@ public class DebugShader : MonoBehaviour
             ActiveDebugPixelRatio(false);
         }
 
-
-        if (IsEdna)
-        {
-            Shader.SetGlobalInt("_debugIsEdna", 1);
-        }
-        else
-        {
-            Shader.SetGlobalInt("_debugIsEdna", 0);
-        }
+        UpdateDebugEdna();
     }
 
     private void ActiveDebugPixelRatio(bool IsActive)
