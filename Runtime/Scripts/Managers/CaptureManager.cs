@@ -9,6 +9,30 @@ using Utils = StudioManette.Edna.RuntimeUtils;
 
 namespace StudioManette.Edna
 {
+    /// <summary>
+    /// Only used to workaround the fact the neither dictionaries nor tuples are automatically serialised by Unity
+    /// </summary>
+    [System.Serializable]
+    internal class CameraCaptureSettings
+    {
+        public Transform Transform;
+        public float FocalLength;
+        public string ParentMaterialName;
+        public CameraCaptureSettings(Transform transform, float focalLength, string parentMaterialName = "")
+        { 
+            Transform = transform;
+            FocalLength = focalLength;
+            ParentMaterialName = parentMaterialName;
+        }
+    }
+
+    [System.Serializable]
+    internal class CaptureParentMaterial
+    {
+        public string ParentMaterialName;
+        public Material ParentMaterial;
+    }
+
     public class CaptureManager : MonoBehaviour
     {
         public Canvas canvasCapture;
@@ -27,7 +51,12 @@ namespace StudioManette.Edna
 
         public GameObject rootGameObject;
 
-        private List<Transform> trCamerasToCapture;
+        [SerializeField]
+        private List<CaptureParentMaterial> CaptureParentMaterials;
+
+        private List<CameraCaptureSettings> trCamerasToCapture;
+
+        private Material previousParentMat;
 
         public float waitingTimeTakingScreenshot = 0.5f;
         public int refreshRenderCount = 50;
@@ -70,8 +99,10 @@ namespace StudioManette.Edna
 
         public void OnClickCaptureScreenShot()
         {
-            trCamerasToCapture = new List<Transform>();
-            trCamerasToCapture.Add(Camera.main.transform);
+            trCamerasToCapture = new List<CameraCaptureSettings>
+            {
+                new CameraCaptureSettings(Camera.main.transform, Camera.main.focalLength)
+            };
             PrepareCapture();
             Invoke(nameof(LaunchFilePanel), 0.1f);
         }
@@ -84,8 +115,10 @@ namespace StudioManette.Edna
             }
             else
             {
-                trCamerasToCapture = new List<Transform>();
-                trCamerasToCapture.Add(Camera.main.transform);
+                trCamerasToCapture = new List<CameraCaptureSettings>
+                {
+                    new CameraCaptureSettings(Camera.main.transform, Camera.main.focalLength)
+                };
                 LaunchMultipleCameraCapture();
             }
         }
@@ -108,14 +141,22 @@ namespace StudioManette.Edna
             }
             else
             {
-                trCamerasToCapture = new List<Transform>();
-                Transform[] camsTrans = rootGameObject.GetComponentsInChildren<Transform>();
-                foreach (Transform tr in camsTrans)
+                trCamerasToCapture.Clear();
+                foreach (Transform child in rootGameObject.transform.GetChild(0).transform)
                 {
-                    if (tr.name.Contains("Camera"))
+                    Debug.Log(child.name);
+                    Debug.Log(child.name.Contains("Camera"));
+                    if (child.name.Contains("Camera"))
                     {
+                        string[] camParameters = child.name.Split("_");
+                        float focalLength = 50.0f;
 
-                        trCamerasToCapture.Add(tr);
+                        if(camParameters[1] != null)
+                        {
+                            float.TryParse(camParameters[1], out focalLength);
+                        }
+
+                        trCamerasToCapture.Add(new CameraCaptureSettings(child, focalLength, camParameters[2] != null ? camParameters[2].Trim().ToLower() : ""));
                     }
                 }
                 if (trCamerasToCapture.Count == 0)
@@ -166,27 +207,45 @@ namespace StudioManette.Edna
             if (trCamerasToCapture == null || trCamerasToCapture.Count == 0)
             {
                 camCaptureCount = 1;
-                trCamerasToCapture = new List<Transform>();
-                trCamerasToCapture.Add(Camera.main.transform);
+                trCamerasToCapture = new List<CameraCaptureSettings>
+                {
+                    new CameraCaptureSettings(Camera.main.transform, Camera.main.focalLength)
+                };
             }
             float progress = (((camCaptureCount+1 - trCamerasToCapture.Count)*1.0f / camCaptureCount*1.0f) * 100.0f);
 
             Utils.LoadingProgress(progress, filePath);
             Camera mainCamera = Camera.main;
-            Transform tr = trCamerasToCapture[0];
+            Transform tr = trCamerasToCapture[0].Transform;
 
-            if (tr == mainCamera.transform)
-            {
-                cameraCapture.transform.SetPositionAndRotation(mainCamera.transform.position, mainCamera.transform.rotation);
-                cameraCapture.fieldOfView = mainCamera.fieldOfView;
-            }
-            else
-            {
-                cameraCapture.transform.position = tr.position;
-                Vector3 newDirection = Vector3.RotateTowards(cameraCapture.transform.forward, -tr.transform.right, 100, 0);
-                cameraCapture.transform.rotation = Quaternion.LookRotation(newDirection);
-                cameraCapture.focalLength = 50.0f;
-            }
+            if (previousParentMat == null)
+                previousParentMat = GetParentMaterial(rootGameObject);
+
+
+           if (tr == mainCamera.transform)
+           {
+               cameraCapture.transform.SetPositionAndRotation(mainCamera.transform.position, mainCamera.transform.rotation);
+               cameraCapture.fieldOfView = mainCamera.fieldOfView;
+           }
+           else
+           {
+               cameraCapture.transform.position = trCamerasToCapture[0].Transform.position;
+               cameraCapture.transform.rotation = Quaternion.LookRotation(-trCamerasToCapture[0].Transform.right);
+               cameraCapture.focalLength = trCamerasToCapture[0].FocalLength;
+               
+               if(trCamerasToCapture[0].ParentMaterialName != "")
+                {
+                    foreach(CaptureParentMaterial parentMaterial in CaptureParentMaterials)
+                    {
+                        if (parentMaterial.ParentMaterialName == trCamerasToCapture[0].ParentMaterialName)
+                        {
+                            ChangeParentMaterial(rootGameObject, parentMaterial.ParentMaterial);
+                            break;
+                        }
+                    }
+                }
+              
+           }
 
             trCamerasToCapture.RemoveAt(0);
 
@@ -202,6 +261,12 @@ namespace StudioManette.Edna
 
         private void RestoreAfterCapture()
         {
+            if (previousParentMat != null)
+            {
+                ChangeParentMaterial(rootGameObject, previousParentMat);
+                previousParentMat = null;
+            }
+
             if (trCamerasToCapture.Count == 0)
             {
                 ActiveAll(false);
@@ -236,6 +301,44 @@ namespace StudioManette.Edna
                 Capture(fileNameWithExt);
             }
             else RestoreAfterCapture();
+        }
+
+        private void ChangeParentMaterial(GameObject gameObject, Material newParentMaterial)
+        {
+            Renderer renderer;
+            if (gameObject.TryGetComponent<Renderer>(out renderer))
+            {
+                renderer.material.parent = newParentMaterial;
+            }
+
+            if(gameObject.transform.childCount > 0)
+            {
+                foreach(Transform child in gameObject.transform)
+                {
+                    ChangeParentMaterial(child.gameObject, newParentMaterial);
+                }
+            }
+        }
+
+        private Material GetParentMaterial(GameObject gameObject)
+        {
+            Renderer renderer;
+            if (gameObject.TryGetComponent<Renderer>(out renderer))
+            {
+                return renderer.material.parent;
+            }
+            else if (gameObject.transform.childCount > 0)
+            {
+                foreach (Transform child in gameObject.transform)
+                {
+                    Material res = GetParentMaterial(child.gameObject);
+                    if(res != null)
+                    {
+                        return res;
+                    }
+                }
+            }
+            return null;
         }
     }
 }
