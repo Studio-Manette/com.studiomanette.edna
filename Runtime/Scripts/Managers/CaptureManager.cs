@@ -26,13 +26,6 @@ namespace StudioManette.Edna
         }
     }
 
-    [System.Serializable]
-    internal class CaptureParentMaterial
-    {
-        public string ParentMaterialName;
-        public Material ParentMaterial;
-    }
-
     public class CaptureManager : MonoBehaviour
     {
         public Canvas canvasCapture;
@@ -49,14 +42,12 @@ namespace StudioManette.Edna
 
         private string filePath = "";
 
+        public ParentMaterialManager parentMaterialManager;
         public GameObject rootGameObject;
-
-        [SerializeField]
-        private List<CaptureParentMaterial> CaptureParentMaterials;
 
         private List<CameraCaptureSettings> trCamerasToCapture;
 
-        private Material previousParentMat;
+        private Material previousMat;
 
         public float waitingTimeTakingScreenshot = 0.5f;
         public int refreshRenderCount = 50;
@@ -216,8 +207,8 @@ namespace StudioManette.Edna
             Camera mainCamera = Camera.main;
             Transform tr = trCamerasToCapture[0].Transform;
 
-            if (previousParentMat == null)
-                previousParentMat = GetParentMaterial(rootGameObject);
+            if (previousMat == null)
+                previousMat = RuntimeUtils.GetMaterial(rootGameObject);
 
 
            if (tr == mainCamera.transform)
@@ -233,14 +224,11 @@ namespace StudioManette.Edna
                
                if(trCamerasToCapture[0].ParentMaterialName != "")
                 {
-                    foreach(CaptureParentMaterial parentMaterial in CaptureParentMaterials)
+                    Material parentMaterial = null;
+                    if(parentMaterialManager.TryGetParentMaterialByName(trCamerasToCapture[0].ParentMaterialName, out parentMaterial))
                     {
-                        if (parentMaterial.ParentMaterialName == trCamerasToCapture[0].ParentMaterialName)
-                        {
-                            ChangeParentMaterial(rootGameObject, parentMaterial.ParentMaterial);
-                            break;
-                        }
-                    }
+                        RuntimeUtils.ChangeMaterial(rootGameObject, parentMaterial);
+                    }     
                 }
               
            }
@@ -259,10 +247,10 @@ namespace StudioManette.Edna
 
         private void RestoreAfterCapture()
         {
-            if (previousParentMat != null)
+            if (previousMat != null)
             {
-                ChangeParentMaterial(rootGameObject, previousParentMat);
-                previousParentMat = null;
+                RuntimeUtils.ChangeMaterial(rootGameObject, previousMat);
+                previousMat = null;
             }
 
             if (trCamerasToCapture.Count == 0)
@@ -301,42 +289,6 @@ namespace StudioManette.Edna
             else RestoreAfterCapture();
         }
 
-        private void ChangeParentMaterial(GameObject gameObject, Material newParentMaterial)
-        {
-            Renderer renderer;
-            if (gameObject.TryGetComponent<Renderer>(out renderer))
-            {
-                renderer.material.parent = newParentMaterial;
-            }
-
-            if(gameObject.transform.childCount > 0)
-            {
-                foreach(Transform child in gameObject.transform)
-                {
-                    ChangeParentMaterial(child.gameObject, newParentMaterial);
-                }
-            }
-        }
-
-        private Material GetParentMaterial(GameObject gameObject)
-        {
-            Renderer renderer;
-            if (gameObject.TryGetComponent<Renderer>(out renderer))
-            {
-                return renderer.material.parent;
-            }
-            else if (gameObject.transform.childCount > 0)
-            {
-                foreach (Transform child in gameObject.transform)
-                {
-                    Material res = GetParentMaterial(child.gameObject);
-                    if(res != null)
-                    {
-                        return res;
-                    }
-                }
-            }
-            return null;
-        }
+        
     }
 }
