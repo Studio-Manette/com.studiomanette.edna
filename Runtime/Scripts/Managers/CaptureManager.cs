@@ -144,19 +144,17 @@ namespace StudioManette.Edna
                 trCamerasToCapture.Clear();
                 foreach (Transform child in rootGameObject.transform.GetChild(0).transform)
                 {
-                    Debug.Log(child.name);
-                    Debug.Log(child.name.Contains("Camera"));
                     if (child.name.Contains("Camera"))
                     {
                         string[] camParameters = child.name.Split("_");
                         float focalLength = 50.0f;
 
-                        if(camParameters[1] != null)
+                        if(camParameters.Length > 1)
                         {
                             float.TryParse(camParameters[1], out focalLength);
                         }
 
-                        trCamerasToCapture.Add(new CameraCaptureSettings(child, focalLength, camParameters[2] != null ? camParameters[2].Trim().ToLower() : ""));
+                        trCamerasToCapture.Add(new CameraCaptureSettings(child, focalLength, camParameters.Length > 2 ? camParameters[2].Trim().ToLower() : ""));
                     }
                 }
                 if (trCamerasToCapture.Count == 0)
@@ -212,7 +210,7 @@ namespace StudioManette.Edna
                     new CameraCaptureSettings(Camera.main.transform, Camera.main.focalLength)
                 };
             }
-            float progress = (((camCaptureCount+1 - trCamerasToCapture.Count)*1.0f / camCaptureCount*1.0f) * 100.0f);
+            float progress = (((camCaptureCount+1 - trCamerasToCapture.Count)*1.0f / camCaptureCount*1.0f));
 
             Utils.LoadingProgress(progress, filePath);
             Camera mainCamera = Camera.main;
