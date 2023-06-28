@@ -464,7 +464,7 @@ namespace StudioManette.Edna
                 }
                 CameraDistance = _mainCamera.transform.position.magnitude;
                 CameraPivot = bounds.center;
-                CameraAngle = new Vector2(180f, 0f);
+                CameraAngle = new Vector2(0f, 0f);
                 ProcessInput(true);
             }
         }
