@@ -45,7 +45,7 @@ namespace StudioManette.Edna
         public ParentMaterialManager parentMaterialManager;
         public GameObject rootGameObject;
 
-        private List<CameraCaptureSettings> trCamerasToCapture;
+        private List<CameraCaptureSettings> trCamerasToCapture = new List<CameraCaptureSettings>();
 
         private Material previousMat;
 
@@ -100,22 +100,40 @@ namespace StudioManette.Edna
 
         public void OnClickQuickCapture()
         {
-            if (string.IsNullOrEmpty(folderCapturePath))
+            if (!Directory.Exists(folderCapturePath))
             {
-                Utils.Alert("Before make a quick capture, you need to define a folder with a first screenshot. Click on the \"Capture Screenshot...\" button to configure it.");
-            }
-            else
-            {
-                trCamerasToCapture = new List<CameraCaptureSettings>
+                if (!OnSaveFolderSelected(StandaloneFileBrowser.OpenFolderPanel("Select a root folder for your captures", "", false)))
                 {
-                    new CameraCaptureSettings(Camera.main.transform, Camera.main.focalLength)
-                };
-                LaunchMultipleCameraCapture();
+                    Utils.Alert("Before make a capture, you need to define a folder.");
+                    return;
+                }
             }
+
+            trCamerasToCapture = new List<CameraCaptureSettings>
+            {
+                new CameraCaptureSettings(Camera.main.transform, Camera.main.focalLength)
+            };
+            LaunchMultipleCameraCapture();
+        }
+
+        public void OnClickChooseCaptureRootDirectory()
+        {
+            OnSaveFolderSelected(StandaloneFileBrowser.OpenFolderPanel("Select a root folder for your captures", "", false));
+        }
+
+        private bool OnSaveFolderSelected(IList<ItemWithStream> folders)
+        {
+            if (folders[0] != null && !string.IsNullOrEmpty(folders[0].Name) && Directory.Exists(folders[0].Name))
+            {
+                folderCapturePath = folders[0].Name;
+                folderCaptureUI.text = folderCapturePath;
+                return true;
+            }
+            else return false;
         }
 
 
-        public void LaunchMultipleCameraCapture()
+    public void LaunchMultipleCameraCapture()
         {
             camCaptureCount = trCamerasToCapture.Count;
             PrepareCapture();
@@ -126,36 +144,37 @@ namespace StudioManette.Edna
 
         public void OnClickQuickCaptureBlenderCameras()
         {
-            if (string.IsNullOrEmpty(folderCapturePath))
+            if (!Directory.Exists(folderCapturePath))
             {
-                Utils.Alert("Before make a quick capture, you need to define a folder with a first screenshot. Click on the \"Capture Screenshot...\" button to configure it.");
+                if (!OnSaveFolderSelected(StandaloneFileBrowser.OpenFolderPanel("Select a root folder for your captures", "", false)))
+                {
+                    Utils.Alert("Before make a capture, you need to define a folder.");
+                    return;
+                }
+            }
+            trCamerasToCapture.Clear();
+            foreach (Transform child in rootGameObject.transform.GetChild(0).transform)
+            {
+                if (child.name.Contains("Camera"))
+                {
+                    string[] camParameters = child.name.Split("_");
+                    float focalLength = 50.0f;
+
+                    if(camParameters.Length > 1)
+                    {
+                        float.TryParse(camParameters[1], out focalLength);
+                    }
+
+                    trCamerasToCapture.Add(new CameraCaptureSettings(child, focalLength, camParameters.Length > 2 ? camParameters[2].Trim().ToLower() : ""));
+                }
+            }
+            if (trCamerasToCapture.Count == 0)
+            {
+                Utils.Alert("Not custom Camera is available in fbx file");
             }
             else
             {
-                trCamerasToCapture.Clear();
-                foreach (Transform child in rootGameObject.transform.GetChild(0).transform)
-                {
-                    if (child.name.Contains("Camera"))
-                    {
-                        string[] camParameters = child.name.Split("_");
-                        float focalLength = 50.0f;
-
-                        if(camParameters.Length > 1)
-                        {
-                            float.TryParse(camParameters[1], out focalLength);
-                        }
-
-                        trCamerasToCapture.Add(new CameraCaptureSettings(child, focalLength, camParameters.Length > 2 ? camParameters[2].Trim().ToLower() : ""));
-                    }
-                }
-                if (trCamerasToCapture.Count == 0)
-                {
-                    Utils.Alert("Not custom Camera is available in fbx file");
-                }
-                else
-                {
-                    LaunchMultipleCameraCapture();
-                }
+                LaunchMultipleCameraCapture();
             }
         }
 
@@ -191,8 +210,6 @@ namespace StudioManette.Edna
 
         public void Capture(string capturePath)
         {
-            filePath = capturePath;
-
             if (trCamerasToCapture == null || trCamerasToCapture.Count == 0)
             {
                 camCaptureCount = 1;
@@ -215,14 +232,15 @@ namespace StudioManette.Edna
            {
                cameraCapture.transform.SetPositionAndRotation(mainCamera.transform.position, mainCamera.transform.rotation);
                cameraCapture.fieldOfView = mainCamera.fieldOfView;
-           }
+               filePath = capturePath;
+            }
            else
            {
-               cameraCapture.transform.position = trCamerasToCapture[0].Transform.position;
-               cameraCapture.transform.rotation = Quaternion.LookRotation(-trCamerasToCapture[0].Transform.right);
-               cameraCapture.focalLength = trCamerasToCapture[0].FocalLength;
+                cameraCapture.transform.position = trCamerasToCapture[0].Transform.position;
+                cameraCapture.transform.rotation = Quaternion.LookRotation(-trCamerasToCapture[0].Transform.right);
+                cameraCapture.focalLength = trCamerasToCapture[0].FocalLength;
                
-               if(trCamerasToCapture[0].ParentMaterialName != "")
+                if(trCamerasToCapture[0].ParentMaterialName != "")
                 {
                     Material parentMaterial = null;
                     if(parentMaterialManager.TryGetParentMaterialByName(trCamerasToCapture[0].ParentMaterialName, out parentMaterial))
@@ -230,8 +248,14 @@ namespace StudioManette.Edna
                         RuntimeUtils.ChangeMaterial(rootGameObject, parentMaterial);
                     }     
                 }
-              
-           }
+               
+                string folderPath = Path.Combine(folderCapturePath, rootGameObject.transform.GetChild(0).name);
+                if (!File.Exists(folderPath)) 
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+                filePath = Path.Combine(folderPath, trCamerasToCapture[0].Transform.name + ".png");
+            }
 
             trCamerasToCapture.RemoveAt(0);
 
@@ -288,7 +312,5 @@ namespace StudioManette.Edna
             }
             else RestoreAfterCapture();
         }
-
-        
     }
 }

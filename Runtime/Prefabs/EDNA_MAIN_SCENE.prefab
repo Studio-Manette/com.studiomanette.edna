@@ -21317,13 +21317,13 @@ RectTransform:
   m_Children:
   - {fileID: 4230881584768300068}
   - {fileID: 8265726725683417500}
-  - {fileID: 6378930593104191080}
-  - {fileID: 833311819558858338}
   - {fileID: 1861957936871695184}
   - {fileID: 3775148379699000841}
+  - {fileID: 833311819558858338}
   - {fileID: 715722623395287429}
   - {fileID: 1278558865282528322}
   - {fileID: 8177645309489333124}
+  - {fileID: 6378930593104191080}
   - {fileID: 2325966921953760501}
   - {fileID: 9168446181079372698}
   m_Father: {fileID: 4394876721888353611}
@@ -29856,6 +29856,7 @@ MonoBehaviour:
   folderCaptureUI: {fileID: 7520986527319608477}
   cameraCapture: {fileID: 8032266330164636106}
   captureDimensions: {x: 1920, y: 1080}
+  parentMaterialManager: {fileID: 0}
   rootGameObject: {fileID: 7941275126263114443}
   waitingTimeTakingScreenshot: 0.1
   refreshRenderCount: 60
@@ -34050,7 +34051,7 @@ PrefabInstance:
     - target: {fileID: 5123034042411550284, guid: 7c541d7117340a24f9e9b1ae2125fca4,
         type: 3}
       propertyPath: m_Value
-      value: 1.0000005
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5123034042631683676, guid: 7c541d7117340a24f9e9b1ae2125fca4,
         type: 3}
@@ -34060,7 +34061,7 @@ PrefabInstance:
     - target: {fileID: 5123034042631683676, guid: 7c541d7117340a24f9e9b1ae2125fca4,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000030517578
+      value: 0.000026807189
       objectReference: {fileID: 0}
     - target: {fileID: 5123034042692877651, guid: 7c541d7117340a24f9e9b1ae2125fca4,
         type: 3}
@@ -34480,7 +34481,7 @@ PrefabInstance:
     - target: {fileID: 6589008007541038896, guid: 93a88c4972fdad34c94d22812609f19e,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000018805265
+      value: 0.0000256598
       objectReference: {fileID: 0}
     - target: {fileID: 8169148110403909677, guid: 93a88c4972fdad34c94d22812609f19e,
         type: 3}
