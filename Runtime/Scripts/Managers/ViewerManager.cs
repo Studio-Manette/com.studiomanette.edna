@@ -340,6 +340,8 @@ namespace StudioManette.Edna
 
         public void OnHierarchyDoubleClick(RuntimeInspectorNamespace.HierarchyData clickedItem)
         {
+            if (clickedItem.BoundTransform == null)
+                return;
             assetViewerManager.SetRootGameObject(clickedItem.BoundTransform.gameObject);
             assetViewerManager.ResetView();
         }
