@@ -139,7 +139,7 @@ namespace StudioManette.Edna
                 try
                 {
                     Utils.LoadingInit("Loading Model...");
-                    AssetLoader.LoadModelFromFile(fbxToLoadAtStartup, OnLoad, OnMaterialsLoad, OnProgress, OnError, null, assetViewerManager.GetAssetLoaderOptions());
+                    AssetLoader.LoadModelFromFile(fbxToLoadAtStartup, OnLoad, OnMaterialsLoad, OnProgress, OnError, assetViewerManager.gameObject, assetViewerManager.GetAssetLoaderOptions());
                 }
                 catch (Exception e)
                 {
@@ -159,7 +159,7 @@ namespace StudioManette.Edna
             if (rootGameObject != null) GameObject.DestroyImmediate(rootGameObject);
 
             Utils.LoadingInit("Loading Model...");
-            AssetLoader.LoadModelFromFile(initFileNameFBX, OnLoad, OnMaterialsLoadOnReloadFBXandMBX, OnProgress, OnError, null, assetViewerManager.GetAssetLoaderOptions());
+            AssetLoader.LoadModelFromFile(initFileNameFBX, OnLoad, OnMaterialsLoadOnReloadFBXandMBX, OnProgress, OnError, assetViewerManager.gameObject, assetViewerManager.GetAssetLoaderOptions());
         }
 
         public void OnClickReloadFBX()
@@ -172,7 +172,7 @@ namespace StudioManette.Edna
             if (rootGameObject != null) GameObject.DestroyImmediate(rootGameObject);
 
             Utils.LoadingInit("Loading Model...");
-            AssetLoader.LoadModelFromFile(initFileNameFBX, OnLoad, OnMaterialsLoadOnReloadFBX, OnProgress, OnError, null, assetViewerManager.GetAssetLoaderOptions());
+            AssetLoader.LoadModelFromFile(initFileNameFBX, OnLoad, OnMaterialsLoadOnReloadFBX, OnProgress, OnError, assetViewerManager.gameObject, assetViewerManager.GetAssetLoaderOptions());
         }
 
         public void OnClickReloadMBX()
@@ -189,7 +189,7 @@ namespace StudioManette.Edna
             }
 
             Utils.LoadingInit("Loading Model...");
-            AssetLoader.LoadModelFromFile(tmpFileNameFBX, OnLoad, OnMaterialsLoadOnReloadMBX, OnProgress, OnError, null, assetViewerManager.GetAssetLoaderOptions());
+            AssetLoader.LoadModelFromFile(tmpFileNameFBX, OnLoad, OnMaterialsLoadOnReloadMBX, OnProgress, OnError, assetViewerManager.gameObject, assetViewerManager.GetAssetLoaderOptions());
         }
 
         public void OnClickLoadMBX()
@@ -251,7 +251,7 @@ namespace StudioManette.Edna
             if (rootGameObject != null) GameObject.DestroyImmediate(rootGameObject);
 
             Utils.LoadingInit("Loading Model...");
-            AssetLoader.LoadModelFromFile(tmpFileNameFBX, OnLoad, OnMaterialsLoadOnLoadNewMBX, OnProgress, OnError, null, assetViewerManager.GetAssetLoaderOptions());
+            AssetLoader.LoadModelFromFile(tmpFileNameFBX, OnLoad, OnMaterialsLoadOnLoadNewMBX, OnProgress, OnError, assetViewerManager.gameObject, assetViewerManager.GetAssetLoaderOptions());
         }
 
         public void OnObjectLoadFromAssetViewer(GameObject go)
