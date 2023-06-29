@@ -10,6 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f3f72d1797fa5b4e9b9193dba35c721, type: 3}
-  m_Name: ReloadFBX
+  m_Name: CaptureBlenderCameras
   m_EditorClassIdentifier: 
-  messageText: Reload current FBX.
+  messageText: 'Use the cameras contained in the fbx file to make captures which
+    will be stored in a folder in the name of the loaded object. To be considered
+    as a camera, its name should look like this : "CameraNamedAsYouWant_FocalLength".
+    For exemple, "Camera01_50" is a valid name and "cam01_abc_50" is not a valid
+    name. '

@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f3f72d1797fa5b4e9b9193dba35c721, type: 3}
-  m_Name: ReloadFBX
+  m_Name: ModelInfos
   m_EditorClassIdentifier: 
-  messageText: Reload current FBX.
+  messageText: Informations relative to the loaded model.
