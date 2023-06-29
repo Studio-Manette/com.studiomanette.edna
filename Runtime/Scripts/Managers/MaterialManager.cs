@@ -582,6 +582,14 @@ namespace StudioManette.Edna
             lightmanager.ToggleFog(!toggle);
         }
 
+        public void DestroyWireframe()
+        {
+            if (!wireFrameGo)
+                return;
+            DestroyImmediate(wireFrameGo);
+            ToggleWireframe(false);
+        }
+
         public void ChangeWireFrameColorClick()
         {
             ColorPicker.Create(GetWFColor(), "Choose Wireframe color", SetWFColor, ColorWFFinished, true);
