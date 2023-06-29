@@ -111,6 +111,19 @@ namespace StudioManette.Edna
             }
             // Only useful in editor mode but still
             FilesRepositoryManager.Instance.FindAllRepositories();
+
+            // Overwrite Texture and Material Repository if configuration files exist
+            string TexturesRepositoryFilePath = Application.streamingAssetsPath + "/Configurations/TextureFilesRepository.json";
+            if (File.Exists(TexturesRepositoryFilePath))
+            {
+                JsonUtility.FromJsonOverwrite(File.ReadAllText(TexturesRepositoryFilePath), TexturesRepository);
+            }
+
+            string MaterialRepositoryFilePath = Application.streamingAssetsPath + "/Configurations/MaterialFilesRepository.json";
+            if (File.Exists(TexturesRepositoryFilePath))
+            {
+                JsonUtility.FromJsonOverwrite(File.ReadAllText(MaterialRepositoryFilePath), MaterialsRepository);
+            }
         }
 
         public void Update()
