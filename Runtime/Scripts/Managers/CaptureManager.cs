@@ -313,7 +313,11 @@ namespace StudioManette.Edna
 
                 Capture(fileNameWithExt);
             }
-            else RestoreAfterCapture();
+            else
+            {
+                trCamerasToCapture.Clear();
+                RestoreAfterCapture();
+            }
         }
     }
 }
