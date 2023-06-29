@@ -1,7 +1,7 @@
 {
   "name": "com.studiomanette.edna",
   "displayName": "Studio Manette Edna",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "unity": "2022.2",
   "description": "Studio Manette Edna : External Unity Tool for Material preview and Modification",
   "dependencies": {
