@@ -234,6 +234,8 @@ namespace StudioManette.Edna
 
         private void OnLoadMBXSelected(IList<ItemWithStream> files)
         {
+            if (files.Count < 1)
+                return;
             ItemWithStream file = files[0];
             if (file != null && !String.IsNullOrEmpty(file.Name))
             {
