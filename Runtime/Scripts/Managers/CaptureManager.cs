@@ -22,7 +22,7 @@ namespace StudioManette.Edna
         { 
             Transform = transform;
             FocalLength = focalLength;
-            ParentMaterialName = parentMaterialName;
+            //ParentMaterialName = parentMaterialName;
         }
     }
 
@@ -42,12 +42,12 @@ namespace StudioManette.Edna
 
         private string filePath = "";
 
-        public ParentMaterialManager parentMaterialManager;
+        //public ParentMaterialManager parentMaterialManager;
         public GameObject rootGameObject;
 
         private List<CameraCaptureSettings> trCamerasToCapture = new List<CameraCaptureSettings>();
 
-        private Material previousMat;
+        //private Material previousMat;
 
         public float waitingTimeTakingScreenshot = 0.5f;
         public int refreshRenderCount = 50;
@@ -224,8 +224,9 @@ namespace StudioManette.Edna
             Camera mainCamera = Camera.main;
             Transform tr = trCamerasToCapture[0].Transform;
 
-            if (previousMat == null)
-                previousMat = RuntimeUtils.GetMaterial(rootGameObject);
+            // TODO : replace with new material runtime modification
+            //if (previousMat == null)
+            //    previousMat = RuntimeUtils.GetMaterial(rootGameObject);
 
 
            if (tr == mainCamera.transform)
@@ -239,16 +240,17 @@ namespace StudioManette.Edna
                 cameraCapture.transform.position = trCamerasToCapture[0].Transform.position;
                 cameraCapture.transform.rotation = Quaternion.LookRotation(-trCamerasToCapture[0].Transform.right);
                 cameraCapture.focalLength = trCamerasToCapture[0].FocalLength;
-               
-                if(trCamerasToCapture[0].ParentMaterialName != "")
-                {
-                    Material parentMaterial = null;
-                    if(parentMaterialManager.TryGetParentMaterialByName(trCamerasToCapture[0].ParentMaterialName, out parentMaterial))
-                    {
-                        RuntimeUtils.ChangeMaterial(rootGameObject, parentMaterial);
-                    }     
-                }
-               
+
+                // TODO : replace with new material runtime modification
+                //if(trCamerasToCapture[0].ParentMaterialName != "")
+                //{
+                //    Material parentMaterial = null;
+                //    if(parentMaterialManager.TryGetParentMaterialByName(trCamerasToCapture[0].ParentMaterialName, out parentMaterial))
+                //    {
+                //        RuntimeUtils.ChangeMaterial(rootGameObject, parentMaterial);
+                //    }     
+                //}
+
                 string folderPath = Path.Combine(folderCapturePath, rootGameObject.transform.GetChild(0).name);
                 if (!File.Exists(folderPath)) 
                 {
@@ -271,11 +273,12 @@ namespace StudioManette.Edna
 
         private void RestoreAfterCapture()
         {
-            if (previousMat != null)
-            {
-                RuntimeUtils.ChangeMaterial(rootGameObject, previousMat);
-                previousMat = null;
-            }
+            // TODO : replace with new material runtime modification
+            //if (previousMat != null)
+            //{
+            //    RuntimeUtils.ChangeMaterial(rootGameObject, previousMat);
+            //    previousMat = null;
+            //}
 
             if (trCamerasToCapture.Count == 0)
             {
