@@ -150,6 +150,9 @@ namespace StudioManette.Edna
 
         private string lastFBXFolder_;
 
+        [SerializeField]
+        private MaterialManager materialManager;
+
         private void OnProgress(AssetLoaderContext assetLoaderContext, float value)
         {
             if (!isMaterialsLoaded)
@@ -408,6 +411,7 @@ namespace StudioManette.Edna
                 if (RootGameObject != null)
                 {
                     Destroy(RootGameObject);
+                    materialManager.DestroyWireframe();
                 }
                 SetLoading(true);
 
