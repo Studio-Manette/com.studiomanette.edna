@@ -222,7 +222,6 @@ namespace StudioManette.Edna
         public void LoadModelFromFile(GameObject wrapperGameObject = null, Action<AssetLoaderContext> onMaterialsLoad = null)
         {
             isMaterialsLoaded = false;
-            SetLoading(false);
             var filePickerAssetLoader = AssetLoaderFilePicker.Create();
             filePickerAssetLoader.LoadModelFromFilePickerAsync("Select a File", OnLoad, onMaterialsLoad ?? OnMaterialsLoad, OnProgress, OnBeginLoadModel, OnError, wrapperGameObject ?? gameObject, AssetLoaderOptions, lastFBXFolder_);
         }
