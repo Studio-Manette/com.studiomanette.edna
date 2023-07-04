@@ -212,23 +212,23 @@ namespace StudioManette.Edna
         {
             for (int i = 0; i < QualitySettings.names.Length; i++)
             {
-                if (QualitySettings.names[i] == EdnaQualityName)
+                if (QualitySettings.names[i].ToLower().Trim() == EdnaQualityName.ToLower().Trim())
                 {
                     QualitySettings.SetQualityLevel(i, true);
                     break;
                 }
             }
 
-            //Se mettre en DirectX 11
-            PlayerSettings.SetGraphicsAPIs(BuildTarget.StandaloneWindows64, new GraphicsDeviceType[] { GraphicsDeviceType.Direct3D11 } );
+            //Se mettre en DirectX 12
+            PlayerSettings.SetGraphicsAPIs(BuildTarget.StandaloneWindows64, new GraphicsDeviceType[] { GraphicsDeviceType.Direct3D12 } );
         }
 
         private static void RestoreQuality()
         {
             QualitySettings.SetQualityLevel(0, true);
 
-            //Se mettre en DirectX 11 + 12
-            PlayerSettings.SetGraphicsAPIs(BuildTarget.StandaloneWindows64, new GraphicsDeviceType[] { GraphicsDeviceType.Direct3D11, GraphicsDeviceType.Direct3D12 });
+            //Se mettre en DirectX 12
+            PlayerSettings.SetGraphicsAPIs(BuildTarget.StandaloneWindows64, new GraphicsDeviceType[] { GraphicsDeviceType.Direct3D12 });
         }
 
         private static void LaunchBuild()
