@@ -123,6 +123,9 @@ namespace StudioManette.Edna
 
         private bool OnSaveFolderSelected(IList<ItemWithStream> folders)
         {
+            if (folders.Count < 1)
+                return false;
+
             if (folders[0] != null && !string.IsNullOrEmpty(folders[0].Name) && Directory.Exists(folders[0].Name))
             {
                 folderCapturePath = folders[0].Name;
