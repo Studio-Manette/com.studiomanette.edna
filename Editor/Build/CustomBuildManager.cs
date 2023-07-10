@@ -30,7 +30,9 @@ namespace StudioManette.Edna
         private static readonly string shaderProfilesConfigPath = "Assets/Settings/ShaderProfilesConfig.asset";
         private static readonly string lightProfilesConfigPath = "Assets/Settings/LightProfilesConfig.asset";
 
-        private static readonly string EdnaQualityName = "EDNA";
+        private static readonly string EdnaQualityName = "Edna";
+
+        private static readonly string kMainScenePath = "Assets/Scenes/Edna.unity";
 
         private bool isBuildValid;
 
@@ -44,7 +46,7 @@ namespace StudioManette.Edna
             steps.Add(new CustomBuildStep(35, "3.5 Setup Quality and 3D API", SetupQuality));
             steps.Add(new CustomBuildStep(40, "4. Launch Build (" + BuildManager.PreviewIncrementedBuild() + ")", LaunchBuild));
             steps.Add(new CustomBuildStep(50, "5. Compile with ISS", CompileWizard));
-            steps.Add(new CustomBuildStep(60, "6. Push shaders profiles on Tools server and SVN commit", ExportShaderProfiles));
+            // steps.Add(new CustomBuildStep(60, "6. Push shaders profiles on Tools server and SVN commit", ExportShaderProfiles));
             steps.Add(new CustomBuildStep(65, "6.5 Restore Quality and 3D API", RestoreQuality));
         }
 
@@ -97,7 +99,7 @@ namespace StudioManette.Edna
             steps.Add(new CustomBuildStep(50, "5. Compile with ISS", CompileWizard));
             steps.Add(new CustomBuildStep(65, "6.5 Restore Quality and 3D API", RestoreQuality));
             steps.Add(new CustomBuildStep(99, "9. Log Success", LogSuccess));
-            
+
             DoAllSteps();
         }
 
@@ -145,7 +147,7 @@ namespace StudioManette.Edna
 
         private static void OpenMainScene()
         {
-            EditorSceneManager.OpenScene("Assets/_SCENES/Edna/00_EDNA_MAIN.unity", OpenSceneMode.Single);
+            EditorSceneManager.OpenScene(kMainScenePath, OpenSceneMode.Single);
         }
 
         private static void ApplyShadersInMaterialManager()
@@ -218,17 +220,11 @@ namespace StudioManette.Edna
                     break;
                 }
             }
-
-            //Se mettre en DirectX 12
-            PlayerSettings.SetGraphicsAPIs(BuildTarget.StandaloneWindows64, new GraphicsDeviceType[] { GraphicsDeviceType.Direct3D12 } );
         }
 
         private static void RestoreQuality()
         {
             QualitySettings.SetQualityLevel(0, true);
-
-            //Se mettre en DirectX 12
-            PlayerSettings.SetGraphicsAPIs(BuildTarget.StandaloneWindows64, new GraphicsDeviceType[] { GraphicsDeviceType.Direct3D12 });
         }
 
         private static void LaunchBuild()
