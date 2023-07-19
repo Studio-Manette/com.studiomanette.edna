@@ -1,5 +1,3 @@
-using Codice.Client.BaseCommands.CheckIn.Progress;
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -92,25 +90,30 @@ namespace StudioManette.Edna
             Debug.Log(Vector3.SignedAngle(cam, dest, Vector3.up));
             Debug.Log((cam - dest).magnitude);
 
-
+            Vector2 initAngle = assetViewerManager.CameraAngle;
+            Vector2 destAngle = new Vector2(Vector3.SignedAngle(cam, dest, Vector3.up), (cam - dest).magnitude);
+            float camDist = (BlenderCameras[camIndex].Transform.position - pivot).magnitude;
+            float camDistInit = assetViewerManager.CameraDistance;
             //Debug.Log(longitude + " " + latitude); 
 
-            while (t < TransitionDuration)
+            while (t <= TransitionDuration)
             {
                 t += Time.deltaTime;
 
                 float a = easeOutCirc(t / duration);
 
                 Camera.main.focalLength = Mathf.Lerp(initialFocalLength, BlenderCameras[camIndex].FocalLength, a);
-                Camera.main.transform.position = Vector3.Lerp(intialPosition, BlenderCameras[camIndex].Transform.position, a);
-                Camera.main.transform.rotation = Quaternion.Slerp(initalRotation, targetRotation, a);
+                assetViewerManager.CameraAngle = Vector2.Lerp(initAngle, destAngle, a);
+                assetViewerManager.CameraDistance = Mathf.Lerp(camDistInit, camDist, a);
+                //Camera.main.transform.position = Vector3.Lerp(intialPosition, BlenderCameras[camIndex].Transform.position, a);
+                //Camera.main.transform.rotation = Quaternion.Slerp(initalRotation, targetRotation, a);
 
                 yield return null;
             }
 
             Camera.main.focalLength = BlenderCameras[camIndex].FocalLength;
-            Camera.main.transform.position = BlenderCameras[camIndex].Transform.position;
-            Camera.main.transform.rotation = targetRotation;
+            //Camera.main.transform.position = BlenderCameras[camIndex].Transform.position;
+            //Camera.main.transform.rotation = targetRotation;
 
             transition = null;
             assetViewerManager.IsCameraAnimated = false;
