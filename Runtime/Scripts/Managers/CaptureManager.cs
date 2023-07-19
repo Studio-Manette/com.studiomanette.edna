@@ -9,23 +9,6 @@ using Utils = StudioManette.Edna.RuntimeUtils;
 
 namespace StudioManette.Edna
 {
-    /// <summary>
-    /// Only used to workaround the fact the neither dictionaries nor tuples are automatically serialised by Unity
-    /// </summary>
-    [System.Serializable]
-    internal class CameraCaptureSettings
-    {
-        public Transform Transform;
-        public float FocalLength;
-        public string ParentMaterialName;
-        public CameraCaptureSettings(Transform transform, float focalLength, string parentMaterialName = "")
-        { 
-            Transform = transform;
-            FocalLength = focalLength;
-            //ParentMaterialName = parentMaterialName;
-        }
-    }
-
     public class CaptureManager : MonoBehaviour
     {
         public Canvas canvasCapture;
@@ -92,7 +75,7 @@ namespace StudioManette.Edna
         {
             trCamerasToCapture = new List<CameraCaptureSettings>
             {
-                new CameraCaptureSettings(Camera.main.transform, Camera.main.focalLength)
+                new CameraCaptureSettings("Main", Camera.main.transform, Camera.main.focalLength)
             };
             PrepareCapture();
             Invoke(nameof(LaunchFilePanel), 0.1f);
@@ -111,7 +94,7 @@ namespace StudioManette.Edna
 
             trCamerasToCapture = new List<CameraCaptureSettings>
             {
-                new CameraCaptureSettings(Camera.main.transform, Camera.main.focalLength)
+                new CameraCaptureSettings("Main", Camera.main.transform, Camera.main.focalLength)
             };
             LaunchMultipleCameraCapture();
         }
@@ -168,7 +151,7 @@ namespace StudioManette.Edna
                         float.TryParse(camParameters[1], out focalLength);
                     }
 
-                    trCamerasToCapture.Add(new CameraCaptureSettings(child, focalLength, camParameters.Length > 2 ? camParameters[2].Trim().ToLower() : ""));
+                    trCamerasToCapture.Add(new CameraCaptureSettings(child.name, child, focalLength));
                 }
             }
             if (trCamerasToCapture.Count == 0)
@@ -218,7 +201,7 @@ namespace StudioManette.Edna
                 camCaptureCount = 1;
                 trCamerasToCapture = new List<CameraCaptureSettings>
                 {
-                    new CameraCaptureSettings(Camera.main.transform, Camera.main.focalLength)
+                    new CameraCaptureSettings("Main", Camera.main.transform, Camera.main.focalLength)
                 };
             }
             float progress = (((camCaptureCount+1 - trCamerasToCapture.Count)*1.0f / camCaptureCount*1.0f));

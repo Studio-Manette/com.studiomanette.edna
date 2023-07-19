@@ -94,12 +94,12 @@ namespace StudioManette.Edna
         /// <summary>
         /// Current camera distance.
         /// </summary>
-        protected float CameraDistance = 1f;
+        public float CameraDistance = 1f;
 
         /// <summary>
         /// Current camera pivot position.
         /// </summary>
-        protected Vector3 CameraPivot;
+        public Vector3 CameraPivot;
 
         /// <summary>
         /// Input multiplier based on loaded model bounds.
@@ -146,7 +146,7 @@ namespace StudioManette.Edna
         [SerializeField]
         public UnityEvent<string> eventOnLoadedName;
 
-        private bool isCameraAnimated;
+        public bool IsCameraAnimated;
 
         private string lastFBXFolder_;
 
@@ -187,8 +187,8 @@ namespace StudioManette.Edna
 
         public void TweenAngle(Vector2 newAngle, float time)
         {
-            isCameraAnimated = true;
-            DOTween.To(() => CameraAngle, x => CameraAngle = x, newAngle, time).OnComplete(() => isCameraAnimated = false);;
+            IsCameraAnimated = true;
+            DOTween.To(() => CameraAngle, x => CameraAngle = x, newAngle, time).OnComplete(() => IsCameraAnimated = false);;
         }
 
         private float ActualCameraZoom()
@@ -310,7 +310,7 @@ namespace StudioManette.Edna
         /// <summary>Handles the input.</summary>
         private void Update()
         {
-            ProcessInput(isCameraAnimated);
+            ProcessInput(IsCameraAnimated);
 
             if (!EventSystem.current.IsPointerOverGameObject())
             {
