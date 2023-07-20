@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
+
 
 
 namespace StudioManette.Edna
@@ -32,6 +34,8 @@ namespace StudioManette.Edna
         public AssetViewerManager assetViewerManager;
 
         public GameObject rootGameObject;
+
+        public Slider fovSlider;
 
         public float TransitionDuration;
 
@@ -115,16 +119,18 @@ namespace StudioManette.Edna
                     float a = easeOutCirc(t / duration);
 
                     Camera.main.focalLength = Mathf.Lerp(initialFocalLength, BlenderCameras[camIndex].FocalLength, a);
+                    fovSlider.value = Camera.main.fieldOfView;
                     assetViewerManager.CameraAngle = Vector2.Lerp(actualAngle, newAngle, a);
                     assetViewerManager.CameraDistance = Mathf.Lerp(actualCamDist, newCamDist, a);
                     assetViewerManager.CameraPivot = Vector3.Lerp(actualPivot, newPivot, a);
-
+                    
                     yield return null;
                 }
 
             yield return null;
 
             Camera.main.focalLength = BlenderCameras[camIndex].FocalLength;
+            fovSlider.value = Camera.main.fieldOfView;
             assetViewerManager.CameraAngle = newAngle;
             assetViewerManager.CameraDistance = newCamDist;
             assetViewerManager.CameraPivot = newPivot;
