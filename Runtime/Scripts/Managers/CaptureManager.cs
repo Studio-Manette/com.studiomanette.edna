@@ -29,6 +29,8 @@ namespace StudioManette.Edna
 
         public CameraManager cameraManager;
 
+        public KeyCode captureShortcut = KeyCode.C;
+
         private List<CameraCaptureSettings> trCamerasToCapture = new List<CameraCaptureSettings>();
 
         public float waitingTimeTakingScreenshot = 0.5f;
@@ -266,6 +268,14 @@ namespace StudioManette.Edna
             {
                 trCamerasToCapture.Clear();
                 RestoreAfterCapture();
+            }
+        }
+
+        private void Update()
+        {
+            if(Input.GetKeyDown(captureShortcut))
+            {
+                OnClickQuickCapture();
             }
         }
     }
