@@ -29,7 +29,7 @@ namespace StudioManette.Edna
 
         public CameraManager cameraManager;
 
-        public KeyCode captureShortcut = KeyCode.C;
+        public KeyCode captureShortcut = KeyCode.Insert;
 
         private List<CameraCaptureSettings> trCamerasToCapture = new List<CameraCaptureSettings>();
 
