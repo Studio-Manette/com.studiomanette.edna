@@ -7,7 +7,7 @@ using UnityEngine;
 namespace StudioManette.Edna
 {
     /// <summary>
-    /// Only used to workaround the fact the neither dictionaries nor tuples are automatically serialised by Unity
+    /// Element used to describe a camera imported from fbx file
     /// </summary>
     [System.Serializable]
     public class CameraCaptureSettings
@@ -15,6 +15,7 @@ namespace StudioManette.Edna
         public string Name;
         public Transform Transform;
         public float FocalLength;
+
         public CameraCaptureSettings(string name, Transform transform, float focalLength)
         {
             Name = name;
@@ -23,20 +24,26 @@ namespace StudioManette.Edna
         }
     }
 
+    /// <summary>
+    ///  Manager that handles all actions related to cameras imported from a fbx file
+    /// </summary>
     public class CameraManager : MonoBehaviour
     {
         public AssetViewerManager assetViewerManager;
 
-        public List<CameraCaptureSettings> BlenderCameras = new List<CameraCaptureSettings>();
-
         public GameObject rootGameObject;
-
-        public Action CameraLoaded;
 
         public float TransitionDuration;
 
+        public List<CameraCaptureSettings> BlenderCameras = new List<CameraCaptureSettings>();
+
+        public Action CameraLoaded;
+
         private Coroutine transition = null;
 
+        /// <summary>
+        /// Parse the fbx file to find camera object and add it to the BlenderCameras list
+        /// </summary>
         public void LoadBlenderCameras()
         {
             BlenderCameras.Clear();
@@ -60,6 +67,10 @@ namespace StudioManette.Edna
             CameraLoaded?.Invoke();
         }
 
+        /// <summary>
+        /// Move the main camera until it has the same position and rotation as the camera obtained from the given index.
+        /// </summary>
+        /// <param name="camIndex"></param>
         public void SetCameraView(int camIndex)
         {
             if (camIndex < 0 || camIndex >= BlenderCameras.Count)
@@ -69,56 +80,66 @@ namespace StudioManette.Edna
             {
                 StopCoroutine(transition);
             }
-            transition = StartCoroutine(MoveCamera(camIndex, TransitionDuration));
+            transition = StartCoroutine(MoveToIndexedCamera(camIndex, TransitionDuration));
         }
 
-        IEnumerator MoveCamera(int camIndex, float duration = 1.0f)
+        /// <summary>
+        /// Routine that moves the main camera until it has the same position and rotation as the camera obtained from the given index within the given time.
+        /// </summary>
+        /// <param name="camIndex"></param>
+        /// <param name="duration"></param>
+        /// <returns></returns>
+        IEnumerator MoveToIndexedCamera(int camIndex, float duration = 1.0f)
         {
             assetViewerManager.IsCameraAnimated = true;
             float t = 0;
             float initialFocalLength = Camera.main.focalLength;
-            Vector3 intialPosition = Camera.main.transform.position;
-            Quaternion initalRotation = Camera.main.transform.rotation; 
-            
-            Quaternion targetRotation = Quaternion.LookRotation(-BlenderCameras[camIndex].Transform.right);
 
-            Vector3 pivot = assetViewerManager.CameraPivot;
-            Vector3 cam = -rootGameObject.transform.forward;
-            Vector3 dest = (BlenderCameras[camIndex].Transform.position - pivot).normalized;
+            Vector3 actualPivot = assetViewerManager.CameraPivot;
+            float pivotDistance = (BlenderCameras[camIndex].Transform.position - assetViewerManager.GetModelBoundCenter()).magnitude;
+            Vector3 newPivot = BlenderCameras[camIndex].Transform.position - pivotDistance * BlenderCameras[camIndex].Transform.right;
 
+            Vector3 forwardDirection = -rootGameObject.transform.forward;
+            Vector3 cameraDirection = (BlenderCameras[camIndex].Transform.position - newPivot).normalized;
 
-            Debug.Log(Vector3.SignedAngle(cam, dest, Vector3.up));
-            Debug.Log((cam - dest).magnitude);
+            Vector2 actualAngle = assetViewerManager.CameraAngle;
+            Vector2 newAngle = new Vector2(Vector3.SignedAngle(forwardDirection, cameraDirection, Vector3.up), (forwardDirection - cameraDirection).magnitude);
+            float newCamDist = (BlenderCameras[camIndex].Transform.position - newPivot).magnitude;
+            float actualCamDist = assetViewerManager.CameraDistance;
 
-            Vector2 initAngle = assetViewerManager.CameraAngle;
-            Vector2 destAngle = new Vector2(Vector3.SignedAngle(cam, dest, Vector3.up), (cam - dest).magnitude);
-            float camDist = (BlenderCameras[camIndex].Transform.position - pivot).magnitude;
-            float camDistInit = assetViewerManager.CameraDistance;
-            //Debug.Log(longitude + " " + latitude); 
+            if(TransitionDuration > 0)
+                while (t < TransitionDuration)
+                {
+                    t += Time.deltaTime;
 
-            while (t <= TransitionDuration)
-            {
-                t += Time.deltaTime;
+                    float a = easeOutCirc(t / duration);
 
-                float a = easeOutCirc(t / duration);
+                    Camera.main.focalLength = Mathf.Lerp(initialFocalLength, BlenderCameras[camIndex].FocalLength, a);
+                    assetViewerManager.CameraAngle = Vector2.Lerp(actualAngle, newAngle, a);
+                    assetViewerManager.CameraDistance = Mathf.Lerp(actualCamDist, newCamDist, a);
+                    assetViewerManager.CameraPivot = Vector3.Lerp(actualPivot, newPivot, a);
 
-                Camera.main.focalLength = Mathf.Lerp(initialFocalLength, BlenderCameras[camIndex].FocalLength, a);
-                assetViewerManager.CameraAngle = Vector2.Lerp(initAngle, destAngle, a);
-                assetViewerManager.CameraDistance = Mathf.Lerp(camDistInit, camDist, a);
-                //Camera.main.transform.position = Vector3.Lerp(intialPosition, BlenderCameras[camIndex].Transform.position, a);
-                //Camera.main.transform.rotation = Quaternion.Slerp(initalRotation, targetRotation, a);
+                    yield return null;
+                }
 
-                yield return null;
-            }
+            yield return null;
 
             Camera.main.focalLength = BlenderCameras[camIndex].FocalLength;
-            //Camera.main.transform.position = BlenderCameras[camIndex].Transform.position;
-            //Camera.main.transform.rotation = targetRotation;
-
+            assetViewerManager.CameraAngle = newAngle;
+            assetViewerManager.CameraDistance = newCamDist;
+            assetViewerManager.CameraPivot = newPivot;
             transition = null;
+
+            yield return null;
+
             assetViewerManager.IsCameraAnimated = false;
         }
 
+        /// <summary>
+        /// Function that describes out circ easing curve
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
         float easeOutCirc(float x)
         {
             return Mathf.Sqrt(1 - Mathf.Pow(x - 1, 2));

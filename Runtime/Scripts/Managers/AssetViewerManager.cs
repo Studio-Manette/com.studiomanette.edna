@@ -459,17 +459,26 @@ namespace StudioManette.Edna
         {
             if (RootGameObject != null && _mainCamera.enabled)
             {
-                Bounds bounds = RootGameObject.CalculateBounds();
-                if (bounds.size != Vector3.zero)
-                {
-                    _mainCamera.FitToBounds(bounds, CameraDistanceRatio);
-                    InputMultiplier = bounds.size.magnitude * InputMultiplierRatio;
-                }
                 CameraDistance = _mainCamera.transform.position.magnitude;
-                CameraPivot = bounds.center;
+                CameraPivot = GetModelBoundCenter();
                 CameraAngle = new Vector2(0f, 0f);
                 ProcessInput(true);
             }
+        }
+
+        /// <summary>
+        /// Get the bound center of the loaded model
+        /// </summary>
+        /// <returns></returns>
+        public Vector3 GetModelBoundCenter()
+        {
+            Bounds bounds = RootGameObject.CalculateBounds();
+            if (bounds.size != Vector3.zero)
+            {
+                _mainCamera.FitToBounds(bounds, CameraDistanceRatio);
+                InputMultiplier = bounds.size.magnitude * InputMultiplierRatio;
+            }
+            return bounds.center;
         }
 
         /// <summary>
