@@ -147,7 +147,6 @@ namespace StudioManette.Edna
         public UnityEvent<string> eventOnLoadedName;
 
         public bool IsCameraAnimated;
-        public bool IsCameraLocked;
 
         private string lastFBXFolder_;
 
@@ -311,9 +310,6 @@ namespace StudioManette.Edna
         /// <summary>Handles the input.</summary>
         private void Update()
         {
-            if (IsCameraLocked)
-                return;
-
             ProcessInput(IsCameraAnimated);
 
             if (!EventSystem.current.IsPointerOverGameObject())
@@ -332,7 +328,6 @@ namespace StudioManette.Edna
             ModelTransformChanged();
             // Duee to the normalisation in ActualCameraZoom()
             SetCameraZoom(20.0f / 3.0f);
-            IsCameraLocked = false;
         }
 
         /// <summary>Handles the input and moves the Camera accordingly.</summary>
