@@ -349,6 +349,7 @@ namespace StudioManette.Edna
         private void UpdateCamera()
         {
             CameraAngle.x = Mathf.Repeat(CameraAngle.x + GetAxis("Mouse X") * sensitivityX, 360f);
+            //CameraAngle.y = Mathf.Repeat(CameraAngle.y + GetAxis("Mouse Y") * sensitivityY, 360f);
             CameraAngle.y = Mathf.Clamp(CameraAngle.y + GetAxis("Mouse Y") * sensitivityY, -MaxPitch, MaxPitch);
         }
 
@@ -401,7 +402,8 @@ namespace StudioManette.Edna
                         CameraDistance = 0f;
                     }
                 }
-                cameraTransform.position = CameraPivot + Quaternion.AngleAxis(CameraAngle.x, Vector3.up) * Quaternion.AngleAxis(CameraAngle.y, Vector3.right) * new Vector3(0f, 0f, Mathf.Max(MinCameraDistance, CameraDistance));
+
+                cameraTransform.position = CameraPivot + SphericalToCartesian(CameraDistance, CameraAngle.x * Mathf.Deg2Rad, CameraAngle.y * Mathf.Deg2Rad);
                 cameraTransform.LookAt(CameraPivot);
             }
         }
@@ -527,6 +529,46 @@ namespace StudioManette.Edna
         public AssetLoaderOptions GetAssetLoaderOptions()
         {
             return AssetLoaderOptions;
+        }
+
+
+        /// <summary>
+        /// Converts a point from Spherical coordinates to Cartesian (using positive * Y as up). All angles are in radians.
+        /// </summary>
+        /// <param name="radius"></param>
+        /// <param name="polar"></param>
+        /// <param name="elevation"></param>
+        /// <returns>Cartesian coordinates</returns>
+        public static Vector3 SphericalToCartesian(float radius, float polar, float elevation)
+        {
+            Vector3 res = new Vector3();
+            float a = radius * Mathf.Cos(elevation);
+            res.x = a * Mathf.Cos(polar);
+            res.y = radius * Mathf.Sin(elevation);
+            res.z = a * Mathf.Sin(polar);
+            return res;
+        }
+
+
+        /// <summary>
+        /// Converts a point from Cartesian coordinates (using positive Y as up) to Spherical and stores the results in a vector 3 (Radius, Polar, Elevation).
+        /// </summary>
+        /// <param name="cartCoords"></param>
+        /// <returns>Spherical coordinates</returns>
+        public static Vector3 CartesianToSpherical(Vector3 cartCoords)
+        {
+            Vector3 res = new Vector3();
+            if (cartCoords.x == 0)
+                cartCoords.x = Mathf.Epsilon;
+            res.x = Mathf.Sqrt((cartCoords.x * cartCoords.x)
+                            + (cartCoords.y * cartCoords.y)
+                            + (cartCoords.z * cartCoords.z));
+            res.y = Mathf.Atan(cartCoords.z / cartCoords.x);
+            if (cartCoords.x < 0)
+                res.y += Mathf.PI;
+            res.z = Mathf.Asin(cartCoords.y / res.x);
+
+            return res;
         }
     }
 }
