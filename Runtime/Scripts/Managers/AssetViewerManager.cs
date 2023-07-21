@@ -397,9 +397,8 @@ namespace StudioManette.Edna
                         CameraDistance = 0f;
                     }
                 }
-                //cameraTransform.position = CameraPivot + Quaternion.AngleAxis(CameraAngle.x, Vector3.up) * Quaternion.AngleAxis(CameraAngle.y, Vector3.right) * new Vector3(0f, 0f, Mathf.Max(MinCameraDistance, CameraDistance));
-                cameraTransform.position = CameraPivot + getCartesianCoordinates(new Vector3(CameraDistance, CameraAngle.x * Mathf.Deg2Rad, CameraAngle.y * Mathf.Deg2Rad));
-                //cameraTransform.position = CameraPivot + ConvertSphericalToCartesian(new Vector3(CameraAngle.x, CameraAngle.y, CameraDistance));
+
+                cameraTransform.position = CameraPivot + SphericalToCartesian(CameraDistance, CameraAngle.x * Mathf.Deg2Rad, CameraAngle.y * Mathf.Deg2Rad);
                 cameraTransform.LookAt(CameraPivot);
             }
         }
@@ -527,39 +526,44 @@ namespace StudioManette.Edna
             return AssetLoaderOptions;
         }
 
-        public Vector3 ConvertSphericalToCartesian(Vector3 sphericalCoord)
+
+        /// <summary>
+        /// Converts a point from Spherical coordinates to Cartesian (using positive * Y as up). All angles are in radians.
+        /// </summary>
+        /// <param name="radius"></param>
+        /// <param name="polar"></param>
+        /// <param name="elevation"></param>
+        /// <returns>Cartesian coordinates</returns>
+        public static Vector3 SphericalToCartesian(float radius, float polar, float elevation)
         {
-            Vector3 ret = new Vector3();
-            ret.x = sphericalCoord.z * Mathf.Sin(sphericalCoord.x * Mathf.Deg2Rad) * Mathf.Cos(sphericalCoord.y * Mathf.Deg2Rad);
-            ret.y = -sphericalCoord.z * Mathf.Sin(sphericalCoord.x * Mathf.Deg2Rad) * Mathf.Sin(sphericalCoord.y * Mathf.Deg2Rad);
-            ret.z = sphericalCoord.z * Mathf.Cos(sphericalCoord.x * Mathf.Deg2Rad);
-            return ret;
+            Vector3 res = new Vector3();
+            float a = radius * Mathf.Cos(elevation);
+            res.x = a * Mathf.Cos(polar);
+            res.y = radius * Mathf.Sin(elevation);
+            res.z = a * Mathf.Sin(polar);
+            return res;
         }
 
-        public Vector3 getSphericalCoordinates(Vector3 cartesian)
+
+        /// <summary>
+        /// Converts a point from Cartesian coordinates (using positive Y as up) to Spherical and stores the results in a vector 3 (Radius, Polar, Elevation).
+        /// </summary>
+        /// <param name="cartCoords"></param>
+        /// <returns>Spherical coordinates</returns>
+        public static Vector3 CartesianToSpherical(Vector3 cartCoords)
         {
-            float r = Mathf.Sqrt(
-                Mathf.Pow(cartesian.x, 2) +
-                Mathf.Pow(cartesian.y, 2) +
-                Mathf.Pow(cartesian.z, 2)
-            );
+            Vector3 res = new Vector3();
+            if (cartCoords.x == 0)
+                cartCoords.x = Mathf.Epsilon;
+            res.x = Mathf.Sqrt((cartCoords.x * cartCoords.x)
+                            + (cartCoords.y * cartCoords.y)
+                            + (cartCoords.z * cartCoords.z));
+            res.y = Mathf.Atan(cartCoords.z / cartCoords.x);
+            if (cartCoords.x < 0)
+                res.y += Mathf.PI;
+            res.z = Mathf.Asin(cartCoords.y / res.x);
 
-            // use atan2 for built-in checks
-            float phi = Mathf.Atan2(cartesian.x / -cartesian.z, -cartesian.z);
-            float theta = Mathf.Acos(cartesian.y / r);
-
-            return new Vector3(r, phi, theta);
-        }
-
-        public Vector3 getCartesianCoordinates(Vector3 spherical)
-        {
-            Vector3 ret = new Vector3();
-
-            ret.x = spherical.x * Mathf.Sin(spherical.z) * Mathf.Cos(spherical.y);
-            ret.y = spherical.x * Mathf.Sin(spherical.z) * Mathf.Sin(spherical.y);
-            ret.z = spherical.x * Mathf.Cos(spherical.z);
-
-            return ret;
+            return res;
         }
     }
 }
