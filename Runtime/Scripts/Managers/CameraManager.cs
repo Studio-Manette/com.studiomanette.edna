@@ -70,21 +70,69 @@ namespace StudioManette.Edna
                         float.TryParse(camParameters[1], out focalLength);
                     }
 
-                    float pivotDistance = (child.position - assetViewerManager.GetModelBoundCenter()).magnitude;
-                    Vector3 orbitalPivot = child.position - pivotDistance * child.right;
-                    Vector3 forwardDirection = -rootGameObject.transform.forward;
-                    Vector3 cameraDirection = (child.position - orbitalPivot).normalized;
-                    Vector2 orbitalAngle = new Vector2(Vector3.SignedAngle(forwardDirection, cameraDirection, Vector3.up), (forwardDirection - cameraDirection).magnitude);
-                    float orbitalDistance = (child.position - orbitalPivot).magnitude;
 
-                    child.position = orbitalPivot + Quaternion.AngleAxis(orbitalAngle.x, Vector3.up) * Quaternion.AngleAxis(orbitalAngle.y, Vector3.right) * new Vector3(0f, 0f, Mathf.Max(0.01f, orbitalDistance));
-                    child.LookAt(orbitalPivot);
+
+
+
+                    float pivotDistance = (child.position - assetViewerManager.GetModelBoundCenter()).magnitude;
+                    Debug.Log(pivotDistance);
+                    //Vector3 orbitalPivot = child.position - pivotDistance * child.right;
+                    Vector3 orbitalPivot = Vector3.zero;
+                    Vector3 camPosFromPivot = child.position - orbitalPivot;
+
+                    float r = camPosFromPivot.magnitude;
+                    float theta = - Mathf.Acos(camPosFromPivot.z / r) * Mathf.Rad2Deg;
+                    float phi = Mathf.Atan(camPosFromPivot.y / -camPosFromPivot.x) * Mathf.Rad2Deg;
+
+                   //Debug.Log("r = " + r);
+                   //Debug.Log("theta = " + theta + " | " + theta * Mathf.Rad2Deg);
+                   //Debug.Log("phi = " + phi + " | " + phi * Mathf.Rad2Deg);
+
+                    Vector3 forwardDirection = Vector3.forward;
+                    Vector3 cameraDirection = (child.position - orbitalPivot).normalized;
+                    //Vector2 orbitalAngle = new Vector2(Vector3.SignedAngle(forwardDirection, cameraDirection, Vector3.up), Vector2.SignedAngle(new Vector2(1, 0), new Vector2(cameraDirection.z, cameraDirection.y)));
+                    Vector2 orbitalAngle = new Vector2(theta, phi);
+                    Vector3 sphericalCoords = new Vector3(theta, phi, r);
+                    Debug.Log("SphericalCoords = " + sphericalCoords);
+                    Debug.Log("CartesianCoords = " + child.transform.position);
+                    Debug.Log("SphericalCoordsConvertToCartesian = " + ConvertSphericalToCartesian(sphericalCoords));
+
+                    //float orbitalDistance = (child.position - orbitalPivot).magnitude;
+                    float orbitalDistance = r;
+                    //Debug.Log(orbitalPivot + Quaternion.AngleAxis(orbitalAngle.x, Vector3.up) * Quaternion.AngleAxis(orbitalAngle.y, Vector3.right) * new Vector3(0f, 0f, Mathf.Max(0.01f, orbitalDistance)));
+                    //child.position = orbitalPivot + Quaternion.AngleAxis(orbitalAngle.x, Vector3.up) * Quaternion.AngleAxis(orbitalAngle.y, Vector3.right) * new Vector3(0f, 0f, Mathf.Max(0.01f, orbitalDistance));
+                    //child.LookAt(orbitalPivot);
+
+                    Vector3 sphericalCoords1 = assetViewerManager.getSphericalCoordinates(camPosFromPivot);
+                    Vector3 sphericalCoords2 = assetViewerManager.getSphericalCoordinates(new Vector3(camPosFromPivot.z, camPosFromPivot.x, camPosFromPivot.y));
+                    Vector3 sphericalCoords3 = assetViewerManager.getSphericalCoordinates(new Vector3(camPosFromPivot.z, camPosFromPivot.y, camPosFromPivot.x));
+                    Vector3 sphericalCoords4 = assetViewerManager.getSphericalCoordinates(new Vector3(camPosFromPivot.x, camPosFromPivot.z, camPosFromPivot.y));
+                    Vector3 sphericalCoords5 = assetViewerManager.getSphericalCoordinates(new Vector3(camPosFromPivot.y, camPosFromPivot.z, camPosFromPivot.x));
+                    Vector3 sphericalCoords6 = assetViewerManager.getSphericalCoordinates(new Vector3(camPosFromPivot.y, camPosFromPivot.x, camPosFromPivot.z));
+                    Debug.LogWarning("SphericalCoords = " + sphericalCoords2);
+                    Debug.LogWarning("CartesianCoords = " + child.transform.position);
+                    //Debug.LogWarning("SphericalCoordsConvertToCartesian = " + assetViewerManager.getCartesianCoordinates(sphericalCoords2));
+                    Debug.LogWarning("SphericalCoordsConvertToCartesian = " + assetViewerManager.getCartesianCoordinates(sphericalCoords1));
+                    Debug.LogWarning("SphericalCoordsConvertToCartesian = " + assetViewerManager.getCartesianCoordinates(sphericalCoords2));
+                    Debug.LogWarning("SphericalCoordsConvertToCartesian = " + assetViewerManager.getCartesianCoordinates(sphericalCoords3));
+                    Debug.LogWarning("SphericalCoordsConvertToCartesian = " + assetViewerManager.getCartesianCoordinates(sphericalCoords4));
+                    Debug.LogWarning("SphericalCoordsConvertToCartesian = " + assetViewerManager.getCartesianCoordinates(sphericalCoords5));
+                    Debug.LogWarning("SphericalCoordsConvertToCartesian = " + assetViewerManager.getCartesianCoordinates(sphericalCoords6));
 
                     BlenderCameras.Add(new CameraCaptureSettings(child.name, child, focalLength, orbitalAngle, orbitalPivot, orbitalDistance));
                 }
             }
 
             CameraLoaded?.Invoke();
+        }
+
+        public Vector3 ConvertSphericalToCartesian(Vector3 sphericalCoord)
+        {
+            Vector3 ret = new Vector3();
+            ret.x = sphericalCoord.z * Mathf.Sin(sphericalCoord.x * Mathf.Deg2Rad) * Mathf.Cos(sphericalCoord.y * Mathf.Deg2Rad);
+            ret.y = -sphericalCoord.z * Mathf.Sin(sphericalCoord.x * Mathf.Deg2Rad) * Mathf.Sin(sphericalCoord.y * Mathf.Deg2Rad);
+            ret.z = sphericalCoord.z * Mathf.Cos(sphericalCoord.x * Mathf.Deg2Rad);
+            return ret;
         }
 
         /// <summary>
