@@ -16,18 +16,12 @@ namespace StudioManette.Edna
     {
         public string Name;
         public float FocalLength;
-        public Vector3 OrbitalPivot;
-        public Vector2 OrbitalAngle;
-        public float OrbitalDistance;
         public Transform Transform;
 
-        public CameraCaptureSettings(string name, Transform transform, float focalLength, Vector2 orbitalAngle = new Vector2(), Vector3 orbitalPivot = new Vector3(), float orbitalDistance =0f)
+        public CameraCaptureSettings(string name, Transform transform, float focalLength)
         {
             Name = name;
             FocalLength = focalLength;
-            OrbitalAngle = orbitalAngle;
-            OrbitalPivot = orbitalPivot;
-            OrbitalDistance = orbitalDistance;
             Transform = transform;
         }
     }
@@ -49,8 +43,6 @@ namespace StudioManette.Edna
 
         public Action CameraLoaded;
 
-        private Coroutine transition = null;
-
         /// <summary>
         /// Parse the fbx file to find camera object and add it to the BlenderCameras list
         /// </summary>
@@ -70,17 +62,9 @@ namespace StudioManette.Edna
                         float.TryParse(camParameters[1], out focalLength);
                     }
 
-                    float pivotDistance = (child.position - assetViewerManager.GetModelBoundCenter()).magnitude;
-                    Vector3 orbitalPivot = child.position - pivotDistance * child.right;
-                    Vector3 forwardDirection = -rootGameObject.transform.forward;
-                    Vector3 cameraDirection = (child.position - orbitalPivot).normalized;
-                    Vector2 orbitalAngle = new Vector2(Vector3.SignedAngle(forwardDirection, cameraDirection, Vector3.up), (forwardDirection - cameraDirection).magnitude);
-                    float orbitalDistance = (child.position - orbitalPivot).magnitude;
+                    child.rotation = Quaternion.LookRotation(-child.right);
 
-                    child.position = orbitalPivot + Quaternion.AngleAxis(orbitalAngle.x, Vector3.up) * Quaternion.AngleAxis(orbitalAngle.y, Vector3.right) * new Vector3(0f, 0f, Mathf.Max(0.01f, orbitalDistance));
-                    child.LookAt(orbitalPivot);
-
-                    BlenderCameras.Add(new CameraCaptureSettings(child.name, child, focalLength, orbitalAngle, orbitalPivot, orbitalDistance));
+                    BlenderCameras.Add(new CameraCaptureSettings(child.name, child, focalLength));
                 }
             }
 
@@ -96,67 +80,10 @@ namespace StudioManette.Edna
             if (camIndex < 0 || camIndex >= BlenderCameras.Count)
                 return;
                
-            if(transition != null)
-            {
-                StopCoroutine(transition);
-            }
-            transition = StartCoroutine(MoveToIndexedCamera(camIndex, TransitionDuration));
-        }
-
-        /// <summary>
-        /// Routine that moves the main camera until it has the same position and rotation as the camera obtained from the given index within the given time.
-        /// </summary>
-        /// <param name="camIndex"></param>
-        /// <param name="duration"></param>
-        /// <returns></returns>
-        IEnumerator MoveToIndexedCamera(int camIndex, float duration = 1.0f)
-        {
-            assetViewerManager.IsCameraAnimated = true;
-            float t = 0;
-            float initialFocalLength = Camera.main.focalLength;
-
-            Vector3 intialPivot = assetViewerManager.CameraPivot;
-            Vector2 initialAngle = assetViewerManager.CameraAngle;
-            float initialCamDist = assetViewerManager.CameraDistance;
-
-            if(TransitionDuration > 0)
-                while (t < TransitionDuration)
-                {
-                    t += Time.deltaTime;
-
-                    float a = easeOutCirc(t / duration);
-
-                    Camera.main.focalLength = Mathf.Lerp(initialFocalLength, BlenderCameras[camIndex].FocalLength, a);
-                    fovSlider.value = Camera.main.fieldOfView;
-                    assetViewerManager.CameraAngle = Vector2.Lerp(initialAngle, BlenderCameras[camIndex].OrbitalAngle, a);
-                    assetViewerManager.CameraDistance = Mathf.Lerp(initialCamDist, BlenderCameras[camIndex].OrbitalDistance, a);
-                    assetViewerManager.CameraPivot = Vector3.Lerp(intialPivot, BlenderCameras[camIndex].OrbitalPivot, a);
-                    
-                    yield return null;
-                }
-
-            yield return null;
-
+            assetViewerManager.IsCameraLocked = true;
             Camera.main.focalLength = BlenderCameras[camIndex].FocalLength;
-            fovSlider.value = Camera.main.fieldOfView;
-            assetViewerManager.CameraAngle = BlenderCameras[camIndex].OrbitalAngle;
-            assetViewerManager.CameraDistance = BlenderCameras[camIndex].OrbitalDistance;
-            assetViewerManager.CameraPivot = BlenderCameras[camIndex].OrbitalPivot;
-            transition = null;
-
-            yield return null;
-
-            assetViewerManager.IsCameraAnimated = false;
-        }
-
-        /// <summary>
-        /// Function that describes out circ easing curve
-        /// </summary>
-        /// <param name="x"></param>
-        /// <returns></returns>
-        float easeOutCirc(float x)
-        {
-            return Mathf.Sqrt(1 - Mathf.Pow(x - 1, 2));
+            Camera.main.transform.position = BlenderCameras[camIndex].Transform.position;
+            Camera.main.transform.rotation = BlenderCameras[camIndex].Transform.rotation;
         }
 }
 
