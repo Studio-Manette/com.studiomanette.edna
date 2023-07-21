@@ -32,14 +32,20 @@ namespace StudioManette.Edna
 
             dropdownUI.ClearOptions();
 
-            List<string> options = new List<string>();
-
-            for (int i = 0; i < maxLod; i++)
+            if(Groups.Count > 0)
             {
-                options.Add("LOD " + i.ToString());
-            }
+                List<string> options = new List<string>();
 
-            dropdownUI.AddOptions(options);
+                for (int i = 0; i < maxLod; i++)
+                {
+                    options.Add("LOD " + i.ToString());
+                }
+
+                dropdownUI.AddOptions(options);
+
+                SetLOD(0);
+            }
+            
         }
 
         /// <summary>
