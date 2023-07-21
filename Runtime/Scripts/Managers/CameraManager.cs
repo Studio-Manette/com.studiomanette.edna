@@ -84,15 +84,6 @@ namespace StudioManette.Edna
             CameraLoaded?.Invoke();
         }
 
-        public Vector3 ConvertSphericalToCartesian(Vector3 sphericalCoord)
-        {
-            Vector3 ret = new Vector3();
-            ret.x = sphericalCoord.z * Mathf.Sin(sphericalCoord.x * Mathf.Deg2Rad) * Mathf.Cos(sphericalCoord.y * Mathf.Deg2Rad);
-            ret.y = -sphericalCoord.z * Mathf.Sin(sphericalCoord.x * Mathf.Deg2Rad) * Mathf.Sin(sphericalCoord.y * Mathf.Deg2Rad);
-            ret.z = sphericalCoord.z * Mathf.Cos(sphericalCoord.x * Mathf.Deg2Rad);
-            return ret;
-        }
-
         /// <summary>
         /// Move the main camera until it has the same position and rotation as the camera obtained from the given index.
         /// </summary>
