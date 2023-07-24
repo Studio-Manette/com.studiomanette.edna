@@ -58,7 +58,13 @@ namespace StudioManette.Edna
         [HideInInspector]
         public string newMbxPath;
 
+        public GameObject WireFrameGo
+        {
+            get => wireFrameGo;
+        }
+
         private GameObject wireFrameGo;
+
         private string filePath;
         private string mbxPathOverride;
         private string initMbxPath;
@@ -73,6 +79,8 @@ namespace StudioManette.Edna
 
         private string errorMessageLoadMBX;
         private List<string> errorTextures;
+
+        public Action OnWireframeCreatedCallback;
 
         public void OnEnable()
         {
@@ -564,6 +572,8 @@ namespace StudioManette.Edna
             }
 
             wireFrameGo.SetActive(false);
+
+            OnWireframeCreatedCallback?.Invoke();
         }
 
         #region Wireframe Management
