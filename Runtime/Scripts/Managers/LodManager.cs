@@ -9,15 +9,20 @@ namespace StudioManette.Edna
     /// </summary>
     public class LodManager : MonoBehaviour
     {
-        public MaterialManager MaterialManager;
-        public GameObject RootGameObject;
-        public List<LODGroup> Groups = new List<LODGroup>();
-        int maxLod = 0;
-        public TMPro.TMP_Dropdown dropdownUI;
+        [SerializeField]
+        private MaterialManager MaterialManager;
+        [SerializeField]
+        private GameObject RootGameObject;
+        [SerializeField]
+        private List<LODGroup> Groups = new List<LODGroup>();
+        [SerializeField]
+        private TMPro.TMP_Dropdown dropdownUI;
+
+        private int maxLod = 0;
 
         private void Awake()
         {
-            MaterialManager.WireframeCreated += LoadWireframeLOD;
+            MaterialManager.OnWireframeCreatedCallback += LoadWireframeLOD;
         }
 
         /// <summary>
@@ -51,7 +56,7 @@ namespace StudioManette.Edna
         /// <summary>
         /// This function recursively searches for LODGroups in the children of the given Transform and adds them to the 'Groups' list.
         /// </summary>
-        /// <param name="transform"></param>
+        /// <param name="transform">Parent transform used to search LODGroups</param>
         void AddLODGroup(Transform transform)
         {
             LODGroup group;
@@ -76,13 +81,13 @@ namespace StudioManette.Edna
         /// </summary>
         public void LoadWireframeLOD()
         {
-            AddLODGroup(MaterialManager.wireFrameGo.transform);
+            AddLODGroup(MaterialManager.WireFrameGo.transform);
         }
 
         /// <summary>
         /// This function sets the LOD level for all the LODGroups stored in the 'Groups' list.
         /// </summary>
-        /// <param name="index"></param>
+        /// <param name="index">Index of the LOD</param>
         public void SetLOD(int index)
         {
             foreach (LODGroup group in Groups)
