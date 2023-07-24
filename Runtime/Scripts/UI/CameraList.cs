@@ -11,18 +11,15 @@ using UnityEngine.UI;
 public class CameraList : MonoBehaviour
 {
     [SerializeField]
-    CameraManager cameraManager;
+    private CameraManager cameraManager;
 
     [SerializeField]
-    GameObject noCameraObject;
+    private GameObject noCameraObject;
 
     [SerializeField]
-    GameObject CameraButtonPrefab;
+    private GameObject CameraButtonPrefab;
 
-    [SerializeField]
-    GameObject SpacePrefab;
-
-    List<GameObject> instantiatedPrefabs = new List<GameObject>();
+    private List<GameObject> instantiatedPrefabs = new List<GameObject>();
 
     private void Awake()
     {
@@ -46,7 +43,6 @@ public class CameraList : MonoBehaviour
             go.GetComponent<Button>().onClick.AddListener(() => { cameraManager.SetCameraView(x); });
             go.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = cameraManager.BlenderCameras[i].Name;
             instantiatedPrefabs.Add(go);
-            instantiatedPrefabs.Add(Instantiate(SpacePrefab, this.transform));
         }
 
         UpdateLayout();
