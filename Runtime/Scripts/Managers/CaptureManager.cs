@@ -9,23 +9,6 @@ using Utils = StudioManette.Edna.RuntimeUtils;
 
 namespace StudioManette.Edna
 {
-    /// <summary>
-    /// Only used to workaround the fact the neither dictionaries nor tuples are automatically serialised by Unity
-    /// </summary>
-    [System.Serializable]
-    internal class CameraCaptureSettings
-    {
-        public Transform Transform;
-        public float FocalLength;
-        public string ParentMaterialName;
-        public CameraCaptureSettings(Transform transform, float focalLength, string parentMaterialName = "")
-        { 
-            Transform = transform;
-            FocalLength = focalLength;
-            //ParentMaterialName = parentMaterialName;
-        }
-    }
-
     public class CaptureManager : MonoBehaviour
     {
         public Canvas canvasCapture;
@@ -42,17 +25,20 @@ namespace StudioManette.Edna
 
         private string filePath = "";
 
-        //public ParentMaterialManager parentMaterialManager;
         public GameObject rootGameObject;
 
-        private List<CameraCaptureSettings> trCamerasToCapture = new List<CameraCaptureSettings>();
+        public CameraManager cameraManager;
 
-        //private Material previousMat;
+        public KeyCode captureShortcut = KeyCode.Insert;
+
+        private List<CameraCaptureSettings> trCamerasToCapture = new List<CameraCaptureSettings>();
 
         public float waitingTimeTakingScreenshot = 0.5f;
         public int refreshRenderCount = 50;
 
         public int camCaptureCount;
+
+        private const string MAIN_CAMERA_NAME = "Main";
 
         public void OnEnable()
         {
@@ -92,7 +78,7 @@ namespace StudioManette.Edna
         {
             trCamerasToCapture = new List<CameraCaptureSettings>
             {
-                new CameraCaptureSettings(Camera.main.transform, Camera.main.focalLength)
+                new CameraCaptureSettings(MAIN_CAMERA_NAME, Camera.main.transform, Camera.main.focalLength)
             };
             PrepareCapture();
             Invoke(nameof(LaunchFilePanel), 0.1f);
@@ -111,7 +97,7 @@ namespace StudioManette.Edna
 
             trCamerasToCapture = new List<CameraCaptureSettings>
             {
-                new CameraCaptureSettings(Camera.main.transform, Camera.main.focalLength)
+                new CameraCaptureSettings(MAIN_CAMERA_NAME, Camera.main.transform, Camera.main.focalLength)
             };
             LaunchMultipleCameraCapture();
         }
@@ -136,7 +122,7 @@ namespace StudioManette.Edna
         }
 
 
-    public void LaunchMultipleCameraCapture()
+        public void LaunchMultipleCameraCapture()
         {
             camCaptureCount = trCamerasToCapture.Count;
             PrepareCapture();
@@ -156,21 +142,8 @@ namespace StudioManette.Edna
                 }
             }
             trCamerasToCapture.Clear();
-            foreach (Transform child in rootGameObject.transform.GetChild(0).transform)
-            {
-                if (child.name.Contains("Camera"))
-                {
-                    string[] camParameters = child.name.Split("_");
-                    float focalLength = 50.0f;
+            trCamerasToCapture = new List<CameraCaptureSettings>(cameraManager.BlenderCameras);
 
-                    if(camParameters.Length > 1)
-                    {
-                        float.TryParse(camParameters[1], out focalLength);
-                    }
-
-                    trCamerasToCapture.Add(new CameraCaptureSettings(child, focalLength, camParameters.Length > 2 ? camParameters[2].Trim().ToLower() : ""));
-                }
-            }
             if (trCamerasToCapture.Count == 0)
             {
                 Utils.Alert("Not custom Camera is available in fbx file");
@@ -218,7 +191,7 @@ namespace StudioManette.Edna
                 camCaptureCount = 1;
                 trCamerasToCapture = new List<CameraCaptureSettings>
                 {
-                    new CameraCaptureSettings(Camera.main.transform, Camera.main.focalLength)
+                    new CameraCaptureSettings(MAIN_CAMERA_NAME, Camera.main.transform, Camera.main.focalLength)
                 };
             }
             float progress = (((camCaptureCount+1 - trCamerasToCapture.Count)*1.0f / camCaptureCount*1.0f));
@@ -226,11 +199,6 @@ namespace StudioManette.Edna
             Utils.LoadingProgress(progress, filePath);
             Camera mainCamera = Camera.main;
             Transform tr = trCamerasToCapture[0].Transform;
-
-            // TODO : replace with new material runtime modification
-            //if (previousMat == null)
-            //    previousMat = RuntimeUtils.GetMaterial(rootGameObject);
-
 
            if (tr == mainCamera.transform)
            {
@@ -240,19 +208,8 @@ namespace StudioManette.Edna
             }
            else
            {
-                cameraCapture.transform.position = trCamerasToCapture[0].Transform.position;
-                cameraCapture.transform.rotation = Quaternion.LookRotation(-trCamerasToCapture[0].Transform.right);
+                cameraCapture.transform.SetPositionAndRotation(trCamerasToCapture[0].Transform.position, trCamerasToCapture[0].Transform.rotation);
                 cameraCapture.focalLength = trCamerasToCapture[0].FocalLength;
-
-                // TODO : replace with new material runtime modification
-                //if(trCamerasToCapture[0].ParentMaterialName != "")
-                //{
-                //    Material parentMaterial = null;
-                //    if(parentMaterialManager.TryGetParentMaterialByName(trCamerasToCapture[0].ParentMaterialName, out parentMaterial))
-                //    {
-                //        RuntimeUtils.ChangeMaterial(rootGameObject, parentMaterial);
-                //    }     
-                //}
 
                 string folderPath = Path.Combine(folderCapturePath, rootGameObject.transform.GetChild(0).name);
                 if (!File.Exists(folderPath)) 
@@ -276,13 +233,6 @@ namespace StudioManette.Edna
 
         private void RestoreAfterCapture()
         {
-            // TODO : replace with new material runtime modification
-            //if (previousMat != null)
-            //{
-            //    RuntimeUtils.ChangeMaterial(rootGameObject, previousMat);
-            //    previousMat = null;
-            //}
-
             if (trCamerasToCapture.Count == 0)
             {
                 ActiveAll(false);
@@ -320,6 +270,14 @@ namespace StudioManette.Edna
             {
                 trCamerasToCapture.Clear();
                 RestoreAfterCapture();
+            }
+        }
+
+        private void Update()
+        {
+            if(Input.GetKeyDown(captureShortcut))
+            {
+                OnClickQuickCapture();
             }
         }
     }
