@@ -24,7 +24,7 @@ namespace StudioManette.Edna
         public static List<CustomBuildStep> steps = new List<CustomBuildStep>();
 
         private static readonly string lightsFolderLocal = "Assets/Renderer/Common/Lighting/Presets";
-        private static readonly string shaderFolderLocal = "Assets/Renderer/Common/Shader/Profile";
+        private static readonly string shaderFolderLocal = "Assets/Renderer/Common/Shaders/Profiles";
         private static readonly string shaderFolderServer = "Z:/ADDONS/BlenderTools/qtutils/ShaderProfiles";
 
         private static readonly string shaderProfilesConfigPath = "Assets/Settings/ShaderProfilesConfig.asset";
