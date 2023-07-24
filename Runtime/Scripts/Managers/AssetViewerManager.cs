@@ -38,7 +38,15 @@ namespace StudioManette.Edna
         /// <summary>
         /// Current camera pitch and yaw angles.
         /// </summary>
-        public Vector2 CameraAngle;
+        protected Vector2 cameraAngle;
+
+        /// <summary>
+        /// Current camera pitch and yaw angles property.
+        /// </summary>
+        public Vector2 CameraAngle
+        {
+            get => cameraAngle;
+        }
 
         /// <summary>
         /// Anchor game object for all view related parameters
@@ -94,12 +102,28 @@ namespace StudioManette.Edna
         /// <summary>
         /// Current camera distance.
         /// </summary>
-        protected float CameraDistance = 1f;
+        protected float cameraDistance = 1f;
+
+        /// <summary>
+        /// Current camera distance property.
+        /// </summary>
+        public float CameraDistance
+        {
+            get => cameraDistance;
+        }
 
         /// <summary>
         /// Current camera pivot position.
         /// </summary>
-        protected Vector3 CameraPivot;
+        protected Vector3 cameraPivot;
+
+        /// <summary>
+        /// Current camera pivot position property.
+        /// </summary>
+        public Vector3 CameraPivot
+        {
+            get => cameraPivot;
+        }
 
         /// <summary>
         /// Input multiplier based on loaded model bounds.
@@ -146,7 +170,7 @@ namespace StudioManette.Edna
         [SerializeField]
         public UnityEvent<string> eventOnLoadedName;
 
-        private bool isCameraAnimated;
+        public bool IsCameraAnimated;
 
         private string lastFBXFolder_;
 
@@ -187,8 +211,8 @@ namespace StudioManette.Edna
 
         public void TweenAngle(Vector2 newAngle, float time)
         {
-            isCameraAnimated = true;
-            DOTween.To(() => CameraAngle, x => CameraAngle = x, newAngle, time).OnComplete(() => isCameraAnimated = false);;
+            IsCameraAnimated = true;
+            DOTween.To(() => cameraAngle, x => cameraAngle = x, newAngle, time).OnComplete(() => IsCameraAnimated = false);;
         }
 
         private float ActualCameraZoom()
@@ -310,7 +334,7 @@ namespace StudioManette.Edna
         /// <summary>Handles the input.</summary>
         private void Update()
         {
-            ProcessInput(isCameraAnimated);
+            ProcessInput(IsCameraAnimated);
 
             if (!EventSystem.current.IsPointerOverGameObject())
             {
@@ -343,8 +367,9 @@ namespace StudioManette.Edna
         /// <summary>Updates the Camera based on mouse Input.</summary>
         private void UpdateCamera()
         {
-            CameraAngle.x = Mathf.Repeat(CameraAngle.x + GetAxis("Mouse X") * sensitivityX, 360f);
-            CameraAngle.y = Mathf.Clamp(CameraAngle.y + GetAxis("Mouse Y") * sensitivityY, -MaxPitch, MaxPitch);
+            cameraAngle.x = Mathf.Repeat(cameraAngle.x + GetAxis("Mouse X") * sensitivityX, 360f);
+            //CameraAngle.y = Mathf.Repeat(CameraAngle.y + GetAxis("Mouse Y") * sensitivityY, 360f);
+            cameraAngle.y = Mathf.Clamp(cameraAngle.y + GetAxis("Mouse Y") * sensitivityY, -MaxPitch, MaxPitch);
         }
 
         /// <summary>
@@ -372,7 +397,7 @@ namespace StudioManette.Edna
                     }
                     if (GetMouseButton(2))
                     {
-                        CameraPivot -= cameraTransform.up * GetAxis("Mouse Y") * InputMultiplier + cameraTransform.right * GetAxis("Mouse X") * InputMultiplier;
+                        cameraPivot -= cameraTransform.up * GetAxis("Mouse Y") * InputMultiplier + cameraTransform.right * GetAxis("Mouse X") * InputMultiplier;
                     }
                 }
 
@@ -388,16 +413,17 @@ namespace StudioManette.Edna
                 if (!cameraZoomGotChanged)
                 {
                     float actualZoomMultiplier = ActualCameraZoom();
-                    CameraDistance = Mathf.Min(CameraDistance - GetMouseScrollDelta().y * actualZoomMultiplier * InputMultiplier,
+                    cameraDistance = Mathf.Min(cameraDistance - GetMouseScrollDelta().y * actualZoomMultiplier * InputMultiplier,
                         InputMultiplier * (1f / InputMultiplierRatio) * MaxCameraDistanceRatio);
-                    if (CameraDistance < 0f)
+                    if (cameraDistance < 0f)
                     {
-                        CameraPivot += cameraTransform.forward * -CameraDistance;
-                        CameraDistance = 0f;
+                        cameraPivot += cameraTransform.forward * -cameraDistance;
+                        cameraDistance = 0f;
                     }
                 }
-                cameraTransform.position = CameraPivot + Quaternion.AngleAxis(CameraAngle.x, Vector3.up) * Quaternion.AngleAxis(CameraAngle.y, Vector3.right) * new Vector3(0f, 0f, Mathf.Max(MinCameraDistance, CameraDistance));
-                cameraTransform.LookAt(CameraPivot);
+
+                cameraTransform.position = cameraPivot + SphericalToCartesian(cameraDistance, cameraAngle.x * Mathf.Deg2Rad, cameraAngle.y * Mathf.Deg2Rad);
+                cameraTransform.LookAt(cameraPivot);
             }
         }
 
@@ -459,17 +485,26 @@ namespace StudioManette.Edna
         {
             if (RootGameObject != null && _mainCamera.enabled)
             {
-                Bounds bounds = RootGameObject.CalculateBounds();
-                if (bounds.size != Vector3.zero)
-                {
-                    _mainCamera.FitToBounds(bounds, CameraDistanceRatio);
-                    InputMultiplier = bounds.size.magnitude * InputMultiplierRatio;
-                }
-                CameraDistance = _mainCamera.transform.position.magnitude;
-                CameraPivot = bounds.center;
-                CameraAngle = new Vector2(0f, 0f);
+                cameraPivot = GetModelBoundCenter();
+                cameraDistance = (_mainCamera.transform.position - cameraPivot).magnitude;
+                cameraAngle = new Vector2(0f, 0f);
                 ProcessInput(true);
             }
+        }
+
+        /// <summary>
+        /// Get the bound center of the loaded model
+        /// </summary>
+        /// <returns>Bound center of the loaded model</returns>
+        public Vector3 GetModelBoundCenter()
+        {
+            Bounds bounds = RootGameObject.CalculateBounds();
+            if (bounds.size != Vector3.zero)
+            {
+                _mainCamera.FitToBounds(bounds, CameraDistanceRatio);
+                InputMultiplier = bounds.size.magnitude * InputMultiplierRatio;
+            }
+            return bounds.center;
         }
 
         /// <summary>
@@ -513,6 +548,59 @@ namespace StudioManette.Edna
         public AssetLoaderOptions GetAssetLoaderOptions()
         {
             return AssetLoaderOptions;
+        }
+
+
+        /// <summary>
+        /// Converts a point from Spherical coordinates to Cartesian (using positive * Y as up). All angles are in radians.
+        /// </summary>
+        /// <param name="radius">Radius (similar to Camera distance)</param>
+        /// <param name="polar">Polar (similar to pitch angle)</param>
+        /// <param name="elevation"Elevation (similar to yaw angle)></param>
+        /// <returns>Cartesian coordinates</returns>
+        public static Vector3 SphericalToCartesian(float radius, float polar, float elevation)
+        {
+            Vector3 res = new Vector3();
+            float a = radius * Mathf.Cos(elevation);
+            res.x = a * Mathf.Cos(polar);
+            res.y = radius * Mathf.Sin(elevation);
+            res.z = a * Mathf.Sin(polar);
+            return res;
+        }
+
+
+        /// <summary>
+        /// Converts a point from Cartesian coordinates (using positive Y as up) to Spherical and stores the results in a vector 3 (Radius, Polar, Elevation).
+        /// </summary>
+        /// <param name="cartCoords">Cartesian coordinates</param>
+        /// <returns>Spherical coordinates</returns>
+        public static Vector3 CartesianToSpherical(Vector3 cartCoords)
+        {
+            Vector3 res = new Vector3();
+            if (cartCoords.x == 0)
+                cartCoords.x = Mathf.Epsilon;
+            res.x = Mathf.Sqrt((cartCoords.x * cartCoords.x)
+                            + (cartCoords.y * cartCoords.y)
+                            + (cartCoords.z * cartCoords.z));
+            res.y = Mathf.Atan(cartCoords.z / cartCoords.x);
+            if (cartCoords.x < 0)
+                res.y += Mathf.PI;
+            res.z = Mathf.Asin(cartCoords.y / res.x);
+
+            return res;
+        }
+
+        /// <summary>
+        /// Set the spherical position of the camera
+        /// </summary>
+        /// <param name="cameraAngle">pitch and yaw angles</param>
+        /// <param name="cameraDistance">distance between the camera and the pivot</param>
+        /// <param name="cameraPivot">pivot of the camera</param>
+        public void SetCameraSphericalPosition(Vector2 cameraAngle, float cameraDistance, Vector3 cameraPivot)
+        {
+            this.cameraAngle = cameraAngle;
+            this.cameraDistance = cameraDistance;
+            this.cameraPivot = cameraPivot;
         }
     }
 }

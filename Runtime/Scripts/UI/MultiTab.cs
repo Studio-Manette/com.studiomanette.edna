@@ -10,6 +10,9 @@ namespace StudioManette.Edna
         public Transform[] fileContents;
         public Transform[] hierarchyContents;
 
+        public Transform[] cameraContents;
+        public CameraList cameraList;
+
         public HistoryManager historyManager;
         public Transform[] historyContents;
 
@@ -19,6 +22,7 @@ namespace StudioManette.Edna
         {
             //Default is file tab
             OnClickFileTab(true);
+            OnClickCameraTab(false);
             OnClickHierarchyTab(false);
             OnClickHistoryTab(false);
 
@@ -48,6 +52,12 @@ namespace StudioManette.Edna
             SetActiveTab(historyContents, isActive);
 
             historyManager.CheckSanity();
+        }
+
+        public void OnClickCameraTab(bool isActive)
+        {
+            SetActiveTab(cameraContents, isActive);
+            cameraList.UpdateLayout();
         }
 
         private void SetActiveTab(Transform[] contents, bool isActive)
