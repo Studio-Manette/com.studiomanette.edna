@@ -38,6 +38,8 @@ namespace StudioManette.Edna
 
         public int camCaptureCount;
 
+        private const string MAIN_CAMERA_NAME = "Main";
+
         public void OnEnable()
         {
             ActiveAll(false);
@@ -76,7 +78,7 @@ namespace StudioManette.Edna
         {
             trCamerasToCapture = new List<CameraCaptureSettings>
             {
-                new CameraCaptureSettings("Main", Camera.main.transform, Camera.main.focalLength)
+                new CameraCaptureSettings(MAIN_CAMERA_NAME, Camera.main.transform, Camera.main.focalLength)
             };
             PrepareCapture();
             Invoke(nameof(LaunchFilePanel), 0.1f);
@@ -95,7 +97,7 @@ namespace StudioManette.Edna
 
             trCamerasToCapture = new List<CameraCaptureSettings>
             {
-                new CameraCaptureSettings("Main", Camera.main.transform, Camera.main.focalLength)
+                new CameraCaptureSettings(MAIN_CAMERA_NAME, Camera.main.transform, Camera.main.focalLength)
             };
             LaunchMultipleCameraCapture();
         }
@@ -189,7 +191,7 @@ namespace StudioManette.Edna
                 camCaptureCount = 1;
                 trCamerasToCapture = new List<CameraCaptureSettings>
                 {
-                    new CameraCaptureSettings("Main", Camera.main.transform, Camera.main.focalLength)
+                    new CameraCaptureSettings(MAIN_CAMERA_NAME, Camera.main.transform, Camera.main.focalLength)
                 };
             }
             float progress = (((camCaptureCount+1 - trCamerasToCapture.Count)*1.0f / camCaptureCount*1.0f));

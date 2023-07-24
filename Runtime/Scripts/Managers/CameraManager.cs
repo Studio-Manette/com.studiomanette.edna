@@ -37,32 +37,44 @@ namespace StudioManette.Edna
     /// </summary>
     public class CameraManager : MonoBehaviour
     {
-        public AssetViewerManager assetViewerManager;
+        [SerializeField]
+        private AssetViewerManager assetViewerManager;
 
-        public GameObject rootGameObject;
+        [SerializeField]
+        private GameObject rootGameObject;
 
-        public Slider fovSlider;
+        [SerializeField]
+        private Slider fovSlider;
 
-        public float TransitionDuration;
+        [SerializeField]
+        private float TransitionDuration;
 
-        public List<CameraCaptureSettings> BlenderCameras = new List<CameraCaptureSettings>();
+        public List<CameraCaptureSettings> BlenderCameras
+        {
+            get => blenderCameras;
+        }
+
+        private List<CameraCaptureSettings> blenderCameras = new List<CameraCaptureSettings>();
 
         public Action CameraLoaded;
 
         private Coroutine transition = null;
+
+        private const string CAMERA_PREFIX = "camera";
+        private const string SEPARATOR = "_";
 
         /// <summary>
         /// Parse the fbx file to find camera object and add it to the BlenderCameras list
         /// </summary>
         public void LoadBlenderCameras()
         {
-            BlenderCameras.Clear();
+            blenderCameras.Clear();
 
             foreach (Transform child in rootGameObject.transform.GetChild(0).transform)
             {
-                if (child.name.ToLower().Contains("camera"))
+                if (child.name.ToLower().Contains(CAMERA_PREFIX))
                 {
-                    string[] camParameters = child.name.Split("_");
+                    string[] camParameters = child.name.Split(SEPARATOR);
                     float focalLength = 50.0f;
 
                     if (camParameters.Length > 1)
@@ -71,13 +83,12 @@ namespace StudioManette.Edna
                     }
 
                     float pivotDistance = (child.position - assetViewerManager.GetModelBoundCenter()).magnitude;
-                    Debug.Log(pivotDistance);
                     Vector3 orbitalPivot = child.position - pivotDistance * child.right;
                     Vector3 camPosFromPivot = child.position - orbitalPivot;
                     var coord = AssetViewerManager.CartesianToSpherical(camPosFromPivot);
                     child.rotation = Quaternion.LookRotation(-child.right);
 
-                    BlenderCameras.Add(new CameraCaptureSettings(child.name, child, focalLength, new Vector2(coord.y * Mathf.Rad2Deg, coord.z * Mathf.Rad2Deg), orbitalPivot, pivotDistance));
+                    blenderCameras.Add(new CameraCaptureSettings(child.name, child, focalLength, new Vector2(coord.y * Mathf.Rad2Deg, coord.z * Mathf.Rad2Deg), orbitalPivot, pivotDistance));
                 }
             }
 
@@ -90,7 +101,7 @@ namespace StudioManette.Edna
         /// <param name="camIndex"></param>
         public void SetCameraView(int camIndex)
         {
-            if (camIndex < 0 || camIndex >= BlenderCameras.Count)
+            if (camIndex < 0 || camIndex >= blenderCameras.Count)
                 return;
                
             if(transition != null)
@@ -123,22 +134,22 @@ namespace StudioManette.Edna
 
                     float a = easeOutCirc(t / duration);
 
-                    Camera.main.focalLength = Mathf.Lerp(initialFocalLength, BlenderCameras[camIndex].FocalLength, a);
+                    Camera.main.focalLength = Mathf.Lerp(initialFocalLength, blenderCameras[camIndex].FocalLength, a);
                     fovSlider.value = Camera.main.fieldOfView;
-                    assetViewerManager.CameraAngle = Vector2.Lerp(initialAngle, BlenderCameras[camIndex].OrbitalAngle, a);
-                    assetViewerManager.CameraDistance = Mathf.Lerp(initialCamDist, BlenderCameras[camIndex].OrbitalDistance, a);
-                    assetViewerManager.CameraPivot = Vector3.Lerp(intialPivot, BlenderCameras[camIndex].OrbitalPivot, a);
+                    assetViewerManager.SetCameraSphericalPosition(Vector2.Lerp(initialAngle, blenderCameras[camIndex].OrbitalAngle, a),
+                                                        Mathf.Lerp(initialCamDist, blenderCameras[camIndex].OrbitalDistance, a),
+                                                        Vector3.Lerp(intialPivot, blenderCameras[camIndex].OrbitalPivot, a));
                     
                     yield return null;
                 }
 
             yield return null;
 
-            Camera.main.focalLength = BlenderCameras[camIndex].FocalLength;
+            Camera.main.focalLength = blenderCameras[camIndex].FocalLength;
             fovSlider.value = Camera.main.fieldOfView;
-            assetViewerManager.CameraAngle = BlenderCameras[camIndex].OrbitalAngle;
-            assetViewerManager.CameraDistance = BlenderCameras[camIndex].OrbitalDistance;
-            assetViewerManager.CameraPivot = BlenderCameras[camIndex].OrbitalPivot;
+            assetViewerManager.SetCameraSphericalPosition(blenderCameras[camIndex].OrbitalAngle,
+                                                blenderCameras[camIndex].OrbitalDistance,
+                                                blenderCameras[camIndex].OrbitalPivot);
             transition = null;
 
             yield return null;
