@@ -413,12 +413,17 @@ namespace StudioManette.Edna
                 if (!cameraZoomGotChanged)
                 {
                     float actualZoomMultiplier = ActualCameraZoom();
-                    cameraDistance = Mathf.Min(cameraDistance - GetMouseScrollDelta().y * actualZoomMultiplier * InputMultiplier,
-                        InputMultiplier * (1f / InputMultiplierRatio) * MaxCameraDistanceRatio);
+                    cameraDistance = cameraDistance - GetMouseScrollDelta().y * actualZoomMultiplier * InputMultiplier;
+                    float maxCameraDistance = InputMultiplier * (1f / InputMultiplierRatio) * MaxCameraDistanceRatio;
                     if (cameraDistance < 0f)
                     {
                         cameraPivot += cameraTransform.forward * -cameraDistance;
                         cameraDistance = 0f;
+                    }
+                    else if (cameraDistance > maxCameraDistance)
+                    {
+                        cameraPivot += cameraTransform.forward * -(cameraDistance - maxCameraDistance);
+                        cameraDistance = maxCameraDistance;
                     }
                 }
 
