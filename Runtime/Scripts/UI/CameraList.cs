@@ -17,6 +17,9 @@ public class CameraList : MonoBehaviour
     private GameObject noCameraObject;
 
     [SerializeField]
+    private GameObject captureWithCameraButton;
+
+    [SerializeField]
     private GameObject CameraButtonPrefab;
 
     private List<GameObject> instantiatedPrefabs = new List<GameObject>();
@@ -35,6 +38,8 @@ public class CameraList : MonoBehaviour
         }
 
         noCameraObject.SetActive(cameraManager.BlenderCameras.Count < 1);
+
+        captureWithCameraButton.SetActive(cameraManager.BlenderCameras.Count > 0);
 
         for(int i = 0; i < cameraManager.BlenderCameras.Count; i++)
         {
