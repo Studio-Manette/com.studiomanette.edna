@@ -156,17 +156,17 @@ namespace StudioManette.Edna
 
         private void QuickCapture()
         {
-            Capture(GetAvailablePathForCapture());
+            Capture();
         }
 
-        private string GetAvailablePathForCapture()
+        private string GetAvailablePathForCapture(string captureName = "capture")
         {
             int increment = 0;
             string path;
             do
             {
                 increment++;
-                path = folderCapturePath + "/capture_" + increment.ToString("###") + ".png";
+                path = folderCapturePath + "/" + captureName + "_" + increment.ToString("###") + ".png";
             }
             while (File.Exists(path));
 
@@ -184,7 +184,7 @@ namespace StudioManette.Edna
             }
         }
 
-        public void Capture(string capturePath)
+        public void Capture(string capturePath = "")
         {
             if (trCamerasToCapture == null || trCamerasToCapture.Count == 0)
             {
@@ -204,19 +204,21 @@ namespace StudioManette.Edna
            {
                cameraCapture.transform.SetPositionAndRotation(mainCamera.transform.position, mainCamera.transform.rotation);
                cameraCapture.fieldOfView = mainCamera.fieldOfView;
-               filePath = capturePath;
+               filePath = capturePath == "" ? GetAvailablePathForCapture(rootGameObject.transform.GetChild(0).transform.name) : capturePath;
             }
            else
            {
                 cameraCapture.transform.SetPositionAndRotation(trCamerasToCapture[0].Transform.position, trCamerasToCapture[0].Transform.rotation);
                 cameraCapture.focalLength = trCamerasToCapture[0].FocalLength;
 
-                string folderPath = Path.Combine(folderCapturePath, rootGameObject.transform.GetChild(0).name);
-                if (!File.Exists(folderPath)) 
+                string previousFolderPath = folderCapturePath;
+                folderCapturePath = Path.Combine(folderCapturePath, rootGameObject.transform.GetChild(0).name);
+                if (!File.Exists(folderCapturePath)) 
                 {
-                    Directory.CreateDirectory(folderPath);
+                    Directory.CreateDirectory(folderCapturePath);
                 }
-                filePath = Path.Combine(folderPath, trCamerasToCapture[0].Transform.name + ".png");
+                filePath = GetAvailablePathForCapture(rootGameObject.transform.GetChild(0).transform.name + "_" + trCamerasToCapture[0].Name);
+                folderCapturePath = previousFolderPath;
             }
 
             trCamerasToCapture.RemoveAt(0);

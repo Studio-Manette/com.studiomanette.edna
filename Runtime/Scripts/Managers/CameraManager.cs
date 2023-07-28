@@ -88,7 +88,7 @@ namespace StudioManette.Edna
                     var coord = AssetViewerManager.CartesianToSpherical(camPosFromPivot);
                     child.rotation = Quaternion.LookRotation(-child.right);
 
-                    blenderCameras.Add(new CameraCaptureSettings(child.name, child, focalLength, new Vector2(coord.y * Mathf.Rad2Deg, coord.z * Mathf.Rad2Deg), orbitalPivot, pivotDistance));
+                    blenderCameras.Add(new CameraCaptureSettings(camParameters.Length > 0 ? camParameters[0] : child.name, child, focalLength, new Vector2(coord.y * Mathf.Rad2Deg, coord.z * Mathf.Rad2Deg), orbitalPivot, pivotDistance));
                 }
             }
 
