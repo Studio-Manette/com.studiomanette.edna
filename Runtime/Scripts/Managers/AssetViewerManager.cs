@@ -426,9 +426,11 @@ namespace StudioManette.Edna
                         cameraDistance = maxCameraDistance;
                     }
                 }
-
-                cameraTransform.position = cameraPivot + SphericalToCartesian(cameraDistance, cameraAngle.x * Mathf.Deg2Rad, cameraAngle.y * Mathf.Deg2Rad);
-                cameraTransform.LookAt(cameraPivot);
+                
+                if(!IsCameraAnimated)
+                {
+                    UpdateCameraPosition();
+                }
             }
         }
 
@@ -493,7 +495,7 @@ namespace StudioManette.Edna
                 cameraPivot = GetModelBoundCenter();
                 cameraDistance = (_mainCamera.transform.position - cameraPivot).magnitude;
                 cameraAngle = new Vector2(0f, 0f);
-                ProcessInput(true);
+                UpdateCameraPosition();
             }
         }
 
@@ -606,6 +608,17 @@ namespace StudioManette.Edna
             this.cameraAngle = cameraAngle;
             this.cameraDistance = cameraDistance;
             this.cameraPivot = cameraPivot;
+
+            UpdateCameraPosition();
+        }
+
+        /// <summary>
+        /// Update the main camera position according to the spherical coordinates of the instance
+        /// </summary>
+        private void UpdateCameraPosition() 
+        {
+            _mainCamera.transform.position = cameraPivot + SphericalToCartesian(cameraDistance, cameraAngle.x * Mathf.Deg2Rad, cameraAngle.y * Mathf.Deg2Rad);
+            _mainCamera.transform.LookAt(cameraPivot);
         }
     }
 }

@@ -150,10 +150,10 @@ namespace StudioManette.Edna
             assetViewerManager.SetCameraSphericalPosition(blenderCameras[camIndex].OrbitalAngle,
                                                 blenderCameras[camIndex].OrbitalDistance,
                                                 blenderCameras[camIndex].OrbitalPivot);
+
+            yield return new WaitForEndOfFrame();
+
             transition = null;
-
-            yield return null;
-
             assetViewerManager.IsCameraAnimated = false;
         }
 
