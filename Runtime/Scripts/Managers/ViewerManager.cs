@@ -536,5 +536,25 @@ namespace StudioManette.Edna
                 File.Delete(tmpFileNameFBX);
             }
         }
+
+        /// <summary>
+        /// Add the FixTriplanarShader Component to all mesh renderer of the Root GameObject
+        /// </summary>
+        public void ApplyFixTriplanar()
+        {
+            SkinnedMeshRenderer[] skinnedMeshRenderers = rootGameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
+
+            foreach(SkinnedMeshRenderer renderer in skinnedMeshRenderers)
+            {
+                renderer.gameObject.AddComponent<FixTriplanarShader>();
+            }
+
+            MeshFilter[] meshFilters = rootGameObject.GetComponentsInChildren<MeshFilter>();
+
+            foreach(MeshFilter filter in meshFilters)
+            {
+                filter.gameObject.AddComponent<FixTriplanarShader>();
+            }
+        }
     }
 }
