@@ -66,8 +66,21 @@ namespace StudioManette.Edna
             }
         }
 
+        /// <summary>
+        /// Obsolete function, do not use
+        /// </summary>
+        /// <param name="before"></param>
+        /// <param name="after"></param>
+        /// <returns> returns false everytime until the big is fixed</returns>
         private bool TexturesHasChanged(MBXData before, MBXData after)
         {
+            return false;
+            /*
+             * Function obsolete because of Bob version ( #1004 )
+             * https://studio-manette.mantishub.io/view.php?id=1004
+             */
+
+            /*
             MBXData diff = MBXData.Diff(before, after);
 
             foreach (MBXMaterial material in diff.materials)
@@ -86,6 +99,7 @@ namespace StudioManette.Edna
             }
             // Pas de modif de texture
             return false;
+            */
         }
 
         public void Clean()
